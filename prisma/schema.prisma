@@ -13,8 +13,8 @@ model Farms {
   name      String   @db.VarChar(255)
   address   String   @db.VarChar(255)
   photo     String?  @db.Text
-  createdAt DateTime @db.Timestamptz(6)
-  updatedAt DateTime @db.Timestamptz(6)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
   user      Users    @relation(fields: [user_id], references: [id], onDelete: SetNull, onUpdate: Cascade)
 }
 
@@ -26,6 +26,6 @@ model Users {
   phone     String?  @db.VarChar(64)
   photo     String?  @db.Text
   farms     Farms[]
-  createdAt DateTime @db.Timestamptz(6)
-  updatedAt DateTime @db.Timestamptz(6)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 }
