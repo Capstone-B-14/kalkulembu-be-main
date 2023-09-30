@@ -9,9 +9,9 @@ const ErrorResponse = require("../utils/errorResponse");
 // @route   GET /api/v1/users/:userId/farms
 // @access  Public
 exports.getAllFarms = asyncHandler(async (req, res, next) => {
-  if (req.params.userId) {
+  if (Number(req.params.userId)) {
     const farms = await prisma.Farms.findMany({
-      where: { userId: req.params.userId },
+      where: { user_id: Number(req.params.userId) },
     });
 
     return res.status(200).json({
@@ -49,7 +49,7 @@ exports.getFarm = asyncHandler(async (req, res, next) => {
 // @route   POST /api/v1/users/:userId/farms
 // @access  Private
 exports.createFarm = asyncHandler(async (req, res, next) => {
-  req.body.userId = req.params.userId;
+  req.body.userId = Number(req.params.userId);
 
   const user = await prisma.Users.findUnique({
     where: { id: Number(req.params.userId) },
@@ -61,11 +61,20 @@ exports.createFarm = asyncHandler(async (req, res, next) => {
     );
   }
 
+  // Create an object with the required fields
+  const farmData = {
+    name: req.body.name,
+    user_id: req.body.userId,
+    address: req.body.address,
+  };
+
+  // Conditionally add the 'photo' field if it's provided in the request body
+  if (req.body.photo) {
+    farmData.photo = req.body.photo;
+  }
+
   const farm = await prisma.Farms.create({
-    data: {
-      name: req.body.name,
-      userId: Number(req.body.userId),
-    },
+    data: farmData,
   });
 
   res.status(201).json({

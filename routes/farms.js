@@ -1,7 +1,7 @@
 const express = require("express");
 const { getAllFarms, getFarm, createFarm } = require("../controllers/farms");
 
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
 
 const cors = require("cors");
 router.use(cors());
