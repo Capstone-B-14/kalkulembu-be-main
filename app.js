@@ -5,7 +5,6 @@ const logger = require("morgan");
 
 const errorHandler = require("./middleware/errorHandler");
 
-const indexRouter = require("./routes/index");
 const farmsRouter = require("./routes/farms");
 const usersRouter = require("./routes/users");
 
@@ -21,8 +20,7 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(errorHandler);
 
 // Registering routers
-app.use("/", indexRouter);
-app.use("/api/v1/farms", farmsRouter);
 app.use("/api/v1/users", usersRouter);
+app.use("/api/v1/farms", farmsRouter);
 
 module.exports = app;

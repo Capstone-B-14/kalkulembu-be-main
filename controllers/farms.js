@@ -82,3 +82,52 @@ exports.createFarm = asyncHandler(async (req, res, next) => {
     data: farm,
   });
 });
+
+// @desc    Update farm
+// @route   PUT /api/v1/farms/:id
+// @access  Private
+exports.updateFarm = asyncHandler(async (req, res, next) => {
+  let farm = await prisma.Farms.findUnique({
+    where: { id: Number(req.params.id) },
+  });
+
+  if (!farm) {
+    return next(
+      new ErrorResponse(`Farm not found with id of ${req.params.id}`, 404)
+    );
+  }
+
+  farm = await prisma.Farms.update({
+    where: { id: Number(req.params.id) },
+    data: req.body,
+  });
+
+  res.status(200).json({
+    success: true,
+    data: farm,
+  });
+});
+
+// @desc    Delete farm
+// @route   DELETE /api/v1/farms/:id
+// @access  Private
+exports.deleteFarm = asyncHandler(async (req, res, next) => {
+  const farm = await prisma.Farms.findUnique({
+    where: { id: Number(req.params.id) },
+  });
+
+  if (!farm) {
+    return next(
+      new ErrorResponse(`Farm not found with id of ${req.params.id}`, 404)
+    );
+  }
+
+  await prisma.Farms.delete({
+    where: { id: Number(req.params.id) },
+  });
+
+  res.status(200).json({
+    success: true,
+    data: {},
+  });
+});
