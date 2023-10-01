@@ -61,8 +61,14 @@ exports.createCow = asyncHandler(async (req, res, next) => {
     );
   }
 
+  // Create an object with the required fields
+  const cowData = {
+    name: req.body.name,
+    farm_id: req.body.farmId,
+  };
+
   const cow = await prisma.Cows.create({
-    data: req.body,
+    data: cowData,
   });
 
   res.status(201).json({

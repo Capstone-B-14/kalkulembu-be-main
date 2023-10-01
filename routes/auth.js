@@ -10,7 +10,7 @@ const {
 } = require("../controllers/authController");
 const { protect } = require("../middleware/accessControl");
 
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
 
 const cors = require("cors");
 router.use(cors());

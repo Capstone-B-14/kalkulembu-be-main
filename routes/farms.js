@@ -4,6 +4,7 @@ const {
   getFarm,
   createFarm,
 } = require("../controllers/farmsController");
+const { protect } = require("../middleware/accessControl");
 
 const router = express.Router({ mergeParams: true });
 
@@ -12,7 +13,16 @@ router.use(cors());
 
 const advancedResults = require("../middleware/advancedResults");
 
-router.route("/").get(advancedResults("Farms"), getAllFarms).post(createFarm);
+// Include cows router
+const cowsRouter = require("./cows");
+
+// Re-route into cows routes
+router.use("/:farmId/cows", cowsRouter);
+
+router
+  .route("/")
+  .get(advancedResults("Farms"), getAllFarms)
+  .post(protect, createFarm);
 router.route("/:id").get(getFarm);
 
 module.exports = router;
