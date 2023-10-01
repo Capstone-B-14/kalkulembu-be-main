@@ -17,12 +17,12 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
-// Custom error handler
-app.use(errorHandler);
-
 // Registering routers
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/users", usersRouter);
 app.use("/api/v1/farms", farmsRouter);
+
+// Custom error handler
+app.use(errorHandler);
 
 module.exports = app;

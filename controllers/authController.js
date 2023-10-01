@@ -112,7 +112,7 @@ exports.updatePassword = asyncHandler(async (req, res, next) => {
   // Check current password
   const isPasswordMatch = await comparePassword(
     req.user.email,
-    currentPassword
+    currentPassword.toString()
   );
 
   if (!isPasswordMatch) {
@@ -120,7 +120,7 @@ exports.updatePassword = asyncHandler(async (req, res, next) => {
   }
 
   // Check if new password is the same as the current password
-  if (currentPassword === newPassword) {
+  if (currentPassword == newPassword) {
     return next(
       new ErrorResponse(
         "Password baru tidak boleh sama dengan password saat ini",
@@ -130,7 +130,7 @@ exports.updatePassword = asyncHandler(async (req, res, next) => {
   }
 
   // Validate the new password
-  if (newPassword.length < 6) {
+  if (newPassword.toString().length < 6) {
     return next(
       new ErrorResponse("Password baru harus memiliki minimal 6 karakter", 401)
     );

@@ -24,7 +24,7 @@ const createUserWithHashedPassword = async ({ name, email, password }) => {
 // Function to update user's password with a hashed password
 const updateUserPasswordWithHashedPassword = async (userId, newPassword) => {
   const salt = await bcrypt.genSalt(10);
-  const hashedPassword = await bcrypt.hash(newPassword, salt);
+  const hashedPassword = await bcrypt.hash(newPassword.toString(), salt);
 
   return prisma.Users.update({
     where: { id: userId },
@@ -72,7 +72,7 @@ const getResetPasswordToken = () => {
 const getUserByEmailWithPass = async (email) => {
   const user = await prisma.Users.findFirst({
     where: { email: email },
-    select: { password: true }, // Select the password field
+    // select: { password: true }, // Select the password field
   });
 
   return user;

@@ -1,27 +1,20 @@
-// Custom error handler
-const { PrismaClient } = require("@prisma/client");
-const prisma = new PrismaClient();
-
 const ErrorResponse = require("../utils/errorResponse");
 
-function errorHandler(err, req, res, next) {
-  let error = { ...err };
-
-  error.message = err.message;
-
-  // Log error to console
-  console.log(err);
-
-  // Prisma record not found
-  if (error.code === "P2025") {
-    const message = `Resource tidak ditemukan dengan id ${err.value}`;
-    error = new ErrorResponse(message, 404);
+const errorHandler = (err, req, res, next) => {
+  if (err instanceof ErrorResponse) {
+    // If the error is an instance of ErrorResponse, handle it accordingly
+    res.status(err.statusCode).json({
+      success: false,
+      error: err.message,
+    });
+  } else {
+    // If it's not an instance of ErrorResponse, handle other errors
+    console.error(err.stack); // Log the error for debugging purposes
+    res.status(500).json({
+      success: false,
+      error: "Server Error",
+    });
   }
-
-  res.status(error.statusCode || 500).json({
-    success: false,
-    error: error.message || "Server Error",
-  });
-}
+};
 
 module.exports = errorHandler;
