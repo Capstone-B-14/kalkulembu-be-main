@@ -15,19 +15,20 @@ model Users {
   phone     String?  @db.VarChar(64)
   photo     String?  @db.Text
   farms     Farms[]
+  isAdmin   Boolean  @db.Boolean @default(false)
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 }
 
 model Farms {
   id        Int      @id @default(autoincrement())
-  user_id   Int
+  user_id   Int?
   name      String   @db.VarChar(255)
   address   String   @db.VarChar(255)
   photo     String?  @db.Text
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
-  user      Users    @relation(fields: [user_id], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  user      Users?   @relation(fields: [user_id], references: [id], onDelete: SetNull, onUpdate: Cascade)
   cows      Cows[]
 }
 

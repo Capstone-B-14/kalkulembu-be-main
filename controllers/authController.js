@@ -42,7 +42,7 @@ exports.login = asyncHandler(async (req, res, next) => {
   }
 
   // Check if password matches
-  const isMatch = await comparePassword(password);
+  const isMatch = await comparePassword(email, password);
 
   if (!isMatch) {
     return next(new ErrorResponse("Email atau kata sandi salah", 401));
@@ -68,7 +68,7 @@ exports.logout = asyncHandler(async (req, res, next) => {
 });
 
 // @desc    Get currently logged in user
-// @route   GET /api/v1/auth/profile
+// @route   POST /api/v1/auth/profile
 // @access  Private
 exports.getProfile = asyncHandler(async (req, res, next) => {
   const user = await prisma.Users.findUnique({

@@ -9,7 +9,7 @@ function errorHandler(err, req, res, next) {
 
   error.message = err.message;
 
-  // Log error ke console
+  // Log error to console
   console.log(err);
 
   // Prisma record not found

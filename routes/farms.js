@@ -1,5 +1,9 @@
 const express = require("express");
-const { getAllFarms, getFarm, createFarm } = require("../controllers/farms");
+const {
+  getAllFarms,
+  getFarm,
+  createFarm,
+} = require("../controllers/farmsController");
 
 const router = express.Router({ mergeParams: true });
 

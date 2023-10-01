@@ -8,13 +8,14 @@ const jwt = require("jsonwebtoken");
 const asyncExample = async () => {};
 
 // Function to hash password
-const createUserWithHashedPassword = async (password) => {
+const createUserWithHashedPassword = async ({ name, email, password }) => {
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(password, salt);
 
   return prisma.Users.create({
     data: {
-      ...data,
+      name,
+      email,
       password: hashedPassword,
     },
   });
@@ -35,17 +36,18 @@ const updateUserPasswordWithHashedPassword = async (userId, newPassword) => {
 
 // Function to sign JWT token
 const signJwt = (payload) => {
-  return jwt.sign(payload, process.env.JWT_SECRET, {
+  return jwt.sign({ id: payload.id }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRE,
   });
 };
 
 // Function to match password
 const comparePassword = async (email, enteredPassword) => {
-  const user = await prisma.user.findUnique({
+  const user = await prisma.Users.findFirst({
     where: {
       email: email,
     },
+    select: { password: true }, // Select the password field
   });
 
   if (!user) {
@@ -68,7 +70,7 @@ const getResetPasswordToken = () => {
 
 // Function to retrieve a user by email with the password field
 const getUserByEmailWithPass = async (email) => {
-  const user = await prisma.Users.findUnique({
+  const user = await prisma.Users.findFirst({
     where: { email: email },
     select: { password: true }, // Select the password field
   });
@@ -90,10 +92,16 @@ const sendTokenResponse = (user, statusCode, res) => {
     options.secure = true;
   }
 
-  res.status(statusCode).cookie("token", token, options).json({
-    success: true,
-    token,
-  });
+  res
+    .status(statusCode)
+    .cookie("token", token, options)
+    .json({
+      success: true,
+      token,
+      user: {
+        id: user.id,
+      },
+    });
 };
 
 module.exports = {

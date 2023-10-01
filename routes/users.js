@@ -1,6 +1,10 @@
 const express = require("express");
-const { getAllUsers, getUser, createUser } = require("../controllers/users");
-const { getAllFarms, createFarm } = require("../controllers/farms");
+const {
+  getAllUsers,
+  getUser,
+  createUser,
+  deleteUser,
+} = require("../controllers/usersController");
 
 // Include farm router
 const farmsRouter = require("./farms");
@@ -16,6 +20,6 @@ const advancedResults = require("../middleware/advancedResults");
 router.use("/:userId/farms", farmsRouter);
 
 router.route("/").get(advancedResults("Users"), getAllUsers).post(createUser);
-router.route("/:id").get(getUser);
+router.route("/:id").get(getUser).delete(deleteUser);
 
 module.exports = router;
