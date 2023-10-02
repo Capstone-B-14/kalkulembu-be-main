@@ -53,13 +53,14 @@ model Images {
 }
 
 model Stats {
-  id        Int      @id @default(autoincrement())
-  cow_id    Int
-  age       Int      
-  weight    Int      
-  healthy   Boolean  @db.Boolean
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-  cow       Cows     @relation(fields: [cow_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  id          Int      @id @default(autoincrement())
+  cow_id      Int
+  age         Int      
+  weight      Int      
+  healthy     Boolean  @db.Boolean
+  measuredAt  DateTime @map("measured_at")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  cow         Cows     @relation(fields: [cow_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
