@@ -6,18 +6,24 @@ const {
   updateCow,
   deleteCow,
 } = require("../controllers/cowsController");
-const { protect } = require("../middleware/accessControl");
+const { protect, authorize } = require("../middleware/accessControl");
 
 const router = express.Router({ mergeParams: true });
 
 const cors = require("cors");
 router.use(cors());
 
-router.route("/").get(getAllCows).post(protect, createCow);
+const advancedResults = require("../middleware/advancedResults");
+
+router
+  .route("/")
+  .get(advancedResults("Cows"), getAllCows)
+  .post(protect, authorize('farmer', 'admin'), createCow);
+
 router
   .route("/:id")
   .get(getCow)
-  .put(protect, updateCow)
-  .delete(protect, deleteCow);
+  .put(protect, authorize('farmer', 'admin'), updateCow)
+  .delete(protect, authorize('farmer', 'admin'), deleteCow);
 
 module.exports = router;

@@ -15,7 +15,7 @@ model Users {
   phone     String?  @db.VarChar(64)
   photo     String?  @db.Text
   farms     Farms[]
-  isAdmin   Boolean  @db.Boolean @default(false)
+  role      String   @default("user")
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 }

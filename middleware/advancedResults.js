@@ -1,4 +1,4 @@
-const { PrismaClient } = require('@prisma/client');
+const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
 const advancedResults = (model, includeModel) => async (req, res, next) => {
@@ -8,14 +8,14 @@ const advancedResults = (model, includeModel) => async (req, res, next) => {
   const reqQuery = { ...req.query };
 
   // Fields to exclude
-  const removeFields = ['select', 'sort', 'page', 'limit'];
+  const removeFields = ["select", "sort", "page", "limit"];
   removeFields.forEach((param) => delete reqQuery[param]);
 
   // Create Prisma query
   query = prisma[model].findMany({
     where: { ...reqQuery },
     select: req.query.select ? { ...req.query.select } : undefined,
-    orderBy: req.query.sort ? { [req.query.sort]: 'asc' } : undefined,
+    orderBy: req.query.sort ? { [req.query.sort]: "asc" } : undefined,
     skip: req.query.page ? (req.query.page - 1) * req.query.limit : undefined,
     take: req.query.limit ? parseInt(req.query.limit, 10) : undefined,
   });
@@ -28,7 +28,6 @@ const advancedResults = (model, includeModel) => async (req, res, next) => {
   try {
     // Execute the query
     const results = await query;
-
     // Get total count
     const totalCount = await prisma[model].count();
 

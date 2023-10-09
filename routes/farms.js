@@ -4,7 +4,7 @@ const {
   getFarm,
   createFarm,
 } = require("../controllers/farmsController");
-const { protect } = require("../middleware/accessControl");
+const { protect, authorize } = require("../middleware/accessControl");
 
 const router = express.Router({ mergeParams: true });
 
@@ -22,7 +22,8 @@ router.use("/:farmId/cows", cowsRouter);
 router
   .route("/")
   .get(advancedResults("Farms"), getAllFarms)
-  .post(protect, createFarm);
+  .post(protect, authorize('farmer', 'admin'), createFarm);
+
 router.route("/:id").get(getFarm);
 
 module.exports = router;

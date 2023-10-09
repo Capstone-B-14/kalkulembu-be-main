@@ -3,9 +3,10 @@ const {
   getAllUsers,
   getUser,
   createUser,
+  updateUser,
   deleteUser,
 } = require("../controllers/usersController");
-const { protect } = require("../middleware/accessControl");
+const { protect, authorize } = require("../middleware/accessControl");
 
 // Include farm router
 const farmsRouter = require("./farms");
@@ -22,8 +23,13 @@ router.use("/:userId/farms", farmsRouter);
 
 router
   .route("/")
-  .get(advancedResults("Users"), getAllUsers)
-  .post(protect, createUser);
-router.route("/:id").get(getUser).delete(protect, deleteUser);
+  .get(advancedResults("Users"), protect, authorize("admin"), getAllUsers)
+  .post(protect, authorize("admin"), createUser);
+
+router
+  .route("/:id")
+  .get(protect, authorize("admin"), getUser)
+  .put(protect, authorize("admin"), updateUser)
+  .delete(protect, authorize("admin"), deleteUser);
 
 module.exports = router;
