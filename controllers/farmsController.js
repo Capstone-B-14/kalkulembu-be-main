@@ -126,7 +126,7 @@ exports.deleteFarm = asyncHandler(async (req, res, next) => {
     where: { id: Number(req.params.id) },
   });
 
-  res.status(200).json({
+  res.status(204).json({
     success: true,
     data: {},
   });

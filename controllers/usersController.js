@@ -59,7 +59,10 @@ exports.updateUser = asyncHandler(async (req, res, next) => {
     );
   }
 
-  res.status(200).json({ success: true, data: user });
+  res.status(200).json({
+    success: true,
+    data: user,
+  });
 });
 
 // @desc    Delete user
@@ -76,5 +79,8 @@ exports.deleteUser = asyncHandler(async (req, res, next) => {
     );
   }
 
-  res.status(200).json({ success: true, data: {} });
+  res.status(204).json({
+    success: true,
+    data: {},
+  });
 });

@@ -130,13 +130,41 @@ exports.createOrUpdateCowStats = asyncHandler(async (req, res, next) => {
 });
 
 // @desc    Delete cow stats for a specific date (soft delete)
-// @route   DELETE /api/v1/cows/:cowId/stats/:date
+// @route   PUT /api/v1/cows/:cowId/stats/:date
 // @access  Private (Admin only)
 exports.deleteCowStats = asyncHandler(async (req, res, next) => {
   // Check if user is admin
-  if (!req.user.isAdmin) {
+  if (req.user.role !== "admin") {
     return next(
-      new ErrorResponse(`User ${req.user.id} is not authorized to delete stats.`, 401)
+      new ErrorResponse(
+        `User ${req.user.id} is not authorized to delete stats.`,
+        403
+      )
     );
   }
-})
+
+  // Soft delete by updating stats
+  const deletedStats = await prisma.Stats.update({
+    where: {
+      cow_id: Number(req.params.cowId),
+      measuredAt: req.params.date,
+    },
+    data: {
+      deletedAt: new Date().toISOString(),
+    },
+  });
+
+  if (!deletedStats) {
+    return next(
+      new ErrorResponse(
+        `Cow stats not found for cow with id ${req.params.cowId} on date ${req.params.date}`,
+        404
+      )
+    );
+  }
+
+  res.status(200).json({
+    success: true,
+    message: "Stats deleted successfully.",
+  });
+});
