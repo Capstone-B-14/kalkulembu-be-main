@@ -21,3 +21,5 @@ router
   .get(getCowStatsByDate)
   .post(protect, authorize("farmer", "admin"), createOrUpdateCowStats)
   .put(protect, authorize("admin"), deleteCowStats);
+
+module.exports = router;

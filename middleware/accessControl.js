@@ -31,7 +31,11 @@ exports.protect = asyncHandler(async (req, res, next) => {
     });
 
     // Check if the authenticated user's role allows access to Private routes
-    if (req.user.role === "user" || req.user.role === "farmer" || req.user.role === "admin") {
+    if (
+      req.user.role === "user" ||
+      req.user.role === "farmer" ||
+      req.user.role === "admin"
+    ) {
       // If authenticated user is a farmer or admin, grant access
       return next();
     }
