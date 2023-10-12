@@ -163,7 +163,7 @@ exports.deleteCowStats = asyncHandler(async (req, res, next) => {
 
   if (statsToDelete) {
     // Update stats
-    const updatedStats = await prisma.Stats.update({
+    await prisma.Stats.update({
       where: { id: statsToDelete.id },
       data: {
         deletedAt: new Date().toISOString(),
