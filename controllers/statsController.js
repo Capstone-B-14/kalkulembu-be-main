@@ -43,10 +43,18 @@ exports.getCowStatsByDate = asyncHandler(async (req, res, next) => {
     );
   }
 
+  const requestDate = req.params.date.split("T")[0];
+
   const stats = await prisma.Stats.findFirst({
     where: {
       cow_id: Number(req.params.cowId),
-      measuredAt: req.params.date,
+      measuredAt: {
+        gte: new Date(requestDate),
+        lt: new Date(new Date(requestDate).getTime() + 24 * 60 * 60 * 1000),
+      },
+      deletedAt: {
+        equals: null,
+      },
     },
   });
 
@@ -78,13 +86,16 @@ exports.createOrUpdateCowStats = asyncHandler(async (req, res, next) => {
 
   // Restrict creating or updating stats only for the current date (TODAY ONLY)
   const currentDate = new Date().toISOString().split("T")[0];
+  console.log(currentDate);
+
+  const requestDate = req.params.date.split("T")[0];
 
   // No future or past dates allowed
-  if (req.params.date > currentDate) {
+  if (requestDate > currentDate) {
     return next(
       new ErrorResponse(`Cannot create or update stats for future dates.`, 400)
     );
-  } else if (req.params.date < currentDate) {
+  } else if (requestDate < currentDate) {
     return next(
       new ErrorResponse(`Cannot create or update stats for past dates.`, 400)
     );
@@ -143,18 +154,24 @@ exports.deleteCowStats = asyncHandler(async (req, res, next) => {
     );
   }
 
-  // Soft delete by updating stats
-  const deletedStats = await prisma.Stats.update({
+  const statsToDelete = await prisma.Stats.findFirst({
     where: {
       cow_id: Number(req.params.cowId),
       measuredAt: req.params.date,
     },
-    data: {
-      deletedAt: new Date().toISOString(),
-    },
   });
 
-  if (!deletedStats) {
+  if (statsToDelete) {
+    // Update stats
+    const updatedStats = await prisma.Stats.update({
+      where: { id: statsToDelete.id },
+      data: {
+        deletedAt: new Date().toISOString(),
+      },
+    });
+  }
+
+  if (!statsToDelete) {
     return next(
       new ErrorResponse(
         `Cow stats not found for cow with id ${req.params.cowId} on date ${req.params.date}`,
