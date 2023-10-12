@@ -16,9 +16,11 @@ router.use(cors());
 const advancedResults = require("../middleware/advancedResults");
 
 const statsRouter = require("./stats");
+const imagesRouter = require("./images");
 
 router.use("/:cowId/stats", statsRouter);
 router.use("/:cowId/stats/:date", statsRouter);
+router.use("/:cowId/images", imagesRouter)
 
 router
   .route("/")
