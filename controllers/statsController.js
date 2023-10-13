@@ -19,7 +19,12 @@ exports.getCowStats = asyncHandler(async (req, res, next) => {
   }
 
   const stats = await prisma.Stats.findMany({
-    where: { cow_id: Number(req.params.cowId) },
+    where: {
+      cow_id: Number(req.params.cowId),
+      deletedAt: {
+        equals: null,
+      },
+    },
   });
 
   res.status(200).json({
