@@ -3,6 +3,8 @@ const prisma = new PrismaClient();
 const asyncHandler = require("express-async-handler");
 const path = require("path");
 
+const cloudinary = require("cloudinary").v2;
+
 const ErrorResponse = require("../utils/errorResponse");
 
 // @desc    Upload cow image
@@ -25,6 +27,7 @@ exports.cowPhotoUpload = asyncHandler(async (req, res, next) => {
 
   console.log(req.files);
   const file = req.files.file;
+
   // Make sure the image is a photo
   if (!file.mimetype.startsWith("image")) {
     return next(new ErrorResponse(`Please upload an image file`, 400));
@@ -43,22 +46,68 @@ exports.cowPhotoUpload = asyncHandler(async (req, res, next) => {
   // Create custom filename
   file.name = `photo_${cow.id}${path.parse(file.name).ext}`;
 
-  file.mv(`${process.env.FILE_UPLOAD_PATH}/${file.name}`, async (err) => {
+  cloudinary.uploader.upload(file.tempFilePath, async (err, result) => {
     if (err) {
-      console.error(err);
+      console.log(err);
       return next(new ErrorResponse(`Problem with file upload`, 500));
     }
 
     await prisma.Images.create({
       data: {
         cow_id: Number(req.params.cowId),
-        url: file.name,
+        url: result.secure_url,
       },
     });
 
     res.status(200).json({
       success: true,
-      data: file.name,
+      data: result.secure_url,
     });
   });
+
+  // file.mv(`${process.env.FILE_UPLOAD_PATH}/${file.name}`, async (err) => {
+  //   if (err) {
+  //     console.error(err);
+  //     return next(new ErrorResponse(`Problem with file upload`, 500));
+  //   }
+
+  //   await prisma.Images.create({
+  //     data: {
+  //       cow_id: Number(req.params.cowId),
+  //       url: file.name,
+  //     },
+  //   });
+
+  //   res.status(200).json({
+  //     success: true,
+  //     data: file.name,
+  //   });
+  // });
+});
+
+// Cloudinary Upload
+cloudinary.config({
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+  secure: process.env.NODE_ENV === "development" ? false : true,
+});
+
+exports.uploadCloudinary = asyncHandler(async (imagePath, req, res, next) => {
+  // Use the uploaded file's name as the asset's public ID and
+  // allow overwriting the asset with new versions
+  const options = {
+    use_filename: true,
+    unique_filename: false,
+    overwrite: true,
+  };
+
+  try {
+    // Upload the image
+    const result = await cloudinary.uploader.upload(imagePath, options);
+    console.log(result);
+    return result.public_id;
+  } catch (error) {
+    console.error(error);
+  }
 });
