@@ -3,14 +3,14 @@
   "name": "kalkulembu-be-main",
   "builds": [
     {
-      "src": "./bin/www",
+      "src": "./bin/www.js",
       "use": "@vercel/node"
     }
   ],
   "routes": [
     { 
       "src": "/(.*)", 
-      "dest": "/bin/www"
+      "dest": "/bin/www.js"
     }
   ] 
   
