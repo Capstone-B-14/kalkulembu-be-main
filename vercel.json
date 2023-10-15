@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "name": "kalkulembu-be-main",
+  "builds": [
+    {
+      "src": "./bin/www",
+      "use": "@vercel/node"
+    }
+  ]
+}
