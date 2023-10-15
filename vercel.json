@@ -3,7 +3,7 @@
   "name": "kalkulembu-be-main",
   "builds": [
     {
-      "src": "app.js",
+      "src": "./bin/www",
       "use": "@vercel/node"
     }
   ]
