@@ -70,7 +70,7 @@ const getResetPasswordToken = () => {
 const getUserByEmailWithPass = async (email) => {
   const user = await prisma.Users.findFirst({
     where: { email: email },
-    select: { password: true }, // Select the password field
+    // select: { password: true }, // Select the password field
   });
 
   return user;
@@ -84,7 +84,7 @@ const sendTokenResponse = (user, statusCode, res) => {
     process.env.ACCESS_TOKEN_SECRET
   );
   const refreshToken = signJwt(
-    { id: user.id }, 
+    { id: user.id },
     process.env.REFRESH_TOKEN_EXPIRE,
     process.env.REFRESH_TOKEN_SECRET
   );
