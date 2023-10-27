@@ -7,7 +7,8 @@ const ErrorResponse = require("../utils/errorResponse");
 
 // Protect routes
 exports.protect = asyncHandler(async (req, res, next) => {
-  let token;
+  let accessToken;
+  let refreshToken;
 
   // Check if token is in header
   if (
@@ -15,18 +16,26 @@ exports.protect = asyncHandler(async (req, res, next) => {
     req.headers.authorization.startsWith("Bearer")
   ) {
     // Set token from Bearer token in header
-    token = req.headers.authorization.split(" ")[1];
-  } else if (req.cookies.token) {
+    accessToken = req.headers.authorization.split(" ")[1];
+  } else if (req.cookies.accessToken) {
     // Set token from cookie
-    token = req.cookies.token;
+    token = req.cookies.accessToken;
+  }
+
+  // Check if refresh token is in cookie
+  if (req.cookies.refreshToken) {
+    refreshToken = req.cookies.refreshToken;
   }
 
   try {
     // Verify token
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const decodedAccessToken = jwt.verify(
+      accessToken,
+      process.env.ACCESS_TOKEN_SECRET
+    );
 
     req.user = await prisma.Users.findUnique({
-      where: { id: decoded.id },
+      where: { id: decodedAccessToken.id },
       select: { id: true, name: true, email: true, role: true },
     });
 
@@ -38,11 +47,30 @@ exports.protect = asyncHandler(async (req, res, next) => {
     ) {
       // If authenticated user is a farmer or admin, grant access
       return next();
+    } else {
+      // If user is not a farmer or admin, return error
+      return next(new ErrorResponse("Anda tidak memiliki akses", 403));
     }
-
-    // If user is not a farmer or admin, return error
-    return next(new ErrorResponse("Anda tidak memiliki akses", 403));
   } catch (err) {
+    const decodedRefreshToken = jwt.verify(
+      refreshToken,
+      process.env.REFRESH_TOKEN_SECRET
+    );
+
+    // If the refresh token is valid, generate a new access token
+    const newAccessToken = signJwt(
+      { id: decodedRefreshToken.id },
+      process.env.ACCESS_TOKEN_SECRET
+    );
+
+    // Set new access token in cookie
+    res.cookie("accessToken", newAccessToken, {
+      expires: new Date(
+        Date.now() + process.env.ACCESS_TOKEN_EXPIRE * 24 * 60 * 60 * 1000
+      ),
+      httpOnly: true,
+    });
+
     return next(new ErrorResponse("Anda tidak memiliki akses", 401));
   }
 });

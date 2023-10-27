@@ -33,12 +33,11 @@ exports.login = asyncHandler(async (req, res, next) => {
   // Validate email & password
   if (!email || !password)
     return next(new ErrorResponse("Masukkan email dan password Anda", 400));
-
   // Check for user with the password field
   const user = await getUserByEmailWithPass(email);
 
   if (!user) {
-    return next(new ErrorResponse("Email atau kata sandi salah", 401));
+    return next(new ErrorResponse("Emaitau kata sandi salah", 401));
   }
 
   // Check if password matches

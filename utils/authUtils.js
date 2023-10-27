@@ -35,10 +35,8 @@ const updateUserPasswordWithHashedPassword = async (userId, newPassword) => {
 };
 
 // Function to sign JWT token
-const signJwt = (payload) => {
-  return jwt.sign({ id: payload.id }, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_EXPIRE,
-  });
+const signJwt = (payload, expiresIn, secret) => {
+  return jwt.sign(payload, secret, { expiresIn });
 };
 
 // Function to match password
@@ -80,24 +78,43 @@ const getUserByEmailWithPass = async (email) => {
 
 // Utility function to send JWT token in response
 const sendTokenResponse = (user, statusCode, res) => {
-  const token = signJwt({ id: user.id });
-  const options = {
+  const accessToken = signJwt(
+    { id: user.id },
+    process.env.ACCESS_TOKEN_EXPIRE,
+    process.env.ACCESS_TOKEN_SECRET
+  );
+  const refreshToken = signJwt(
+    { id: user.id }, 
+    process.env.REFRESH_TOKEN_EXPIRE,
+    process.env.REFRESH_TOKEN_SECRET
+  );
+
+  const accessTokenOptions = {
     expires: new Date(
-      Date.now() + process.env.JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000
+      Date.now() + process.env.ACCESS_TOKEN_EXPIRE * 24 * 60 * 60 * 1000
+    ),
+    httpOnly: true,
+  };
+
+  const refreshTokenOptions = {
+    expires: new Date(
+      Date.now() + process.env.REFRESH_TOKEN_EXPIRE * 24 * 60 * 60 * 1000
     ),
     httpOnly: true,
   };
 
   if (process.env.NODE_ENV === "production") {
-    options.secure = true;
+    accessTokenOptions.secure = true;
+    refreshTokenOptions.secure = true;
   }
 
   res
     .status(statusCode)
-    .cookie("token", token, options)
+    .cookie("accessToken", accessToken, accessTokenOptions)
+    .cookie("refreshToken", refreshToken, refreshTokenOptions)
     .json({
       success: true,
-      token,
+      accessToken,
       user: {
         id: user.id,
       },
