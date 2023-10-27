@@ -70,7 +70,7 @@ const getResetPasswordToken = () => {
 const getUserByEmailWithPass = async (email) => {
   const user = await prisma.Users.findFirst({
     where: { email: email },
-    // select: { password: true }, // Select the password field
+    select: { password: true }, // Select the password field
   });
 
   return user;
