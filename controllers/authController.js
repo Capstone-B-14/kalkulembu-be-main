@@ -33,11 +33,21 @@ exports.login = asyncHandler(async (req, res, next) => {
   // Validate email & password
   if (!email || !password)
     return next(new ErrorResponse("Masukkan email dan password Anda", 400));
+
   // Check for user with the password field
   const user = await getUserByEmailWithPass(email);
 
   if (!user) {
-    return next(new ErrorResponse("Emaitau kata sandi salah", 401));
+    return next(new ErrorResponse("Email atau kata sandi salah", 401));
+  }
+
+  // Check if the user has a role. If not, assign the "user" role.
+  if (!user.role) {
+    user.role = "user";
+    await prisma.Users.update({
+      where: { id: user.id },
+      data: { role: "user" },
+    });
   }
 
   // Check if password matches
@@ -72,11 +82,21 @@ exports.logout = asyncHandler(async (req, res, next) => {
 exports.getProfile = asyncHandler(async (req, res, next) => {
   const user = await prisma.Users.findUnique({
     where: { id: req.user.id },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      phone: true,
+      photo: true,
+      role: true,
+    },
   });
 
   res.status(200).json({
     success: true,
-    data: user,
+    data: {
+      user: user,
+    },
   });
 });
 

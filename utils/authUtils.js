@@ -5,8 +5,6 @@ const crypto = require("crypto");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
-const asyncExample = async () => {};
-
 // Function to hash password
 const createUserWithHashedPassword = async ({ name, email, password }) => {
   const salt = await bcrypt.genSalt(10);
@@ -17,6 +15,7 @@ const createUserWithHashedPassword = async ({ name, email, password }) => {
       name,
       email,
       password: hashedPassword,
+      role: "user",
     },
   });
 };

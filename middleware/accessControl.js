@@ -3,6 +3,7 @@ const prisma = new PrismaClient();
 const jwt = require("jsonwebtoken");
 const asyncHandler = require("express-async-handler");
 
+const { signJwt } = require("../utils/authUtils");
 const ErrorResponse = require("../utils/errorResponse");
 
 // Protect routes
@@ -19,7 +20,7 @@ exports.protect = asyncHandler(async (req, res, next) => {
     accessToken = req.headers.authorization.split(" ")[1];
   } else if (req.cookies.accessToken) {
     // Set token from cookie
-    token = req.cookies.accessToken;
+    accessToken = req.cookies.accessToken;
   }
 
   // Check if refresh token is in cookie
@@ -52,26 +53,31 @@ exports.protect = asyncHandler(async (req, res, next) => {
       return next(new ErrorResponse("Anda tidak memiliki akses", 403));
     }
   } catch (err) {
-    const decodedRefreshToken = jwt.verify(
-      refreshToken,
-      process.env.REFRESH_TOKEN_SECRET
-    );
+    try {
+      const decodedRefreshToken = jwt.verify(
+        refreshToken,
+        process.env.REFRESH_TOKEN_SECRET
+      );
 
-    // If the refresh token is valid, generate a new access token
-    const newAccessToken = signJwt(
-      { id: decodedRefreshToken.id },
-      process.env.ACCESS_TOKEN_SECRET
-    );
+      // If the refresh token is valid, generate a new access token
+      const newAccessToken = signJwt(
+        { id: decodedRefreshToken.id },
+        process.env.ACCESS_TOKEN_EXPIRE,
+        process.env.ACCESS_TOKEN_SECRET
+      );
 
-    // Set new access token in cookie
-    res.cookie("accessToken", newAccessToken, {
-      expires: new Date(
-        Date.now() + process.env.ACCESS_TOKEN_EXPIRE * 24 * 60 * 60 * 1000
-      ),
-      httpOnly: true,
-    });
+      // Set new access token in cookie
+      res.cookie("accessToken", newAccessToken, {
+        expires: new Date(
+          Date.now() + process.env.ACCESS_TOKEN_EXPIRE * 24 * 60 * 60 * 1000
+        ),
+        httpOnly: true,
+      });
 
-    return next(new ErrorResponse("Anda tidak memiliki akses", 401));
+      return next();
+    } catch (err) {
+      return next(new ErrorResponse("Anda tidak memiliki akses", 401));
+    }
   }
 });
 
