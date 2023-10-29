@@ -64,7 +64,12 @@ exports.login = asyncHandler(async (req, res, next) => {
 // @route   GET /api/v1/auth/logout
 // @access  Private
 exports.logout = asyncHandler(async (req, res, next) => {
-  res.cookie("token", "none", {
+  res.cookie("accessToken", "none", {
+    expires: new Date(Date.now() + 5 * 1000),
+    httpOnly: true,
+  });
+
+  res.cookie("refreshToken", "none", {
     expires: new Date(Date.now() + 5 * 1000),
     httpOnly: true,
   });
