@@ -3,6 +3,8 @@ const {
   getAllFarms,
   getFarm,
   createFarm,
+  updateFarm,
+  deleteFarm,
 } = require("../controllers/farmsController");
 const { protect, authorize } = require("../middleware/accessControl");
 
@@ -24,6 +26,10 @@ router
   .get(advancedResults("Farms"), getAllFarms)
   .post(protect, authorize("farmer", "admin"), createFarm);
 
-router.route("/:id").get(getFarm);
+router
+  .route("/:id")
+  .get(getFarm)
+  .put(protect, authorize("farmer", "admin"), updateFarm)
+  .delete(protect, authorize("admin"), deleteFarm);
 
 module.exports = router;
