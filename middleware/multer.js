@@ -7,9 +7,9 @@ const storage = multer.diskStorage({
   },
   filename: function (req, file, cb) {
     const extname = path.extname(file.originalname);
-    const cowId = req.params.cowId; // Extract cowId from the route parameters
+    const cattleId = req.params.cattleId; // Extract cattleId from the route parameters
     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    cb(null, `photo_${cowId}_${uniqueSuffix}${extname}`);
+    cb(null, `photo_${cattleId}_${uniqueSuffix}${extname}`);
   },
 });
 

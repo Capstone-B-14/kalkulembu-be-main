@@ -13,16 +13,16 @@ router.use(cors());
 
 const advancedResults = require("../middleware/advancedResults");
 
-// Include cows router
-const cowsRouter = require("./cows");
+// Include cattle router
+const cattleRouter = require("./cattle");
 
-// Re-route into cows routes
-router.use("/:farmId/cows", cowsRouter);
+// Re-route into cattle routes
+router.use("/:farmId/cattle", cattleRouter);
 
 router
   .route("/")
   .get(advancedResults("Farms"), getAllFarms)
-  .post(protect, authorize('farmer', 'admin'), createFarm);
+  .post(protect, authorize("farmer", "admin"), createFarm);
 
 router.route("/:id").get(getFarm);
 

@@ -4,23 +4,23 @@ const asyncHandler = require("express-async-handler");
 
 const ErrorResponse = require("../utils/errorResponse");
 
-// @desc    Get stats for a cow
-// @route   GET /api/v1/cows/:cowId/stats
+// @desc    Get stats for a cattle
+// @route   GET /api/v1/cattle/:cattleId/stats
 // @access  Public
-exports.getCowStats = asyncHandler(async (req, res, next) => {
-  const cow = await prisma.Cows.findUnique({
-    where: { id: Number(req.params.cowId) },
+exports.getCattleStats = asyncHandler(async (req, res, next) => {
+  const cattle = await prisma.Cattle.findUnique({
+    where: { id: Number(req.params.cattleId) },
   });
 
-  if (!cow) {
+  if (!cattle) {
     return next(
-      new ErrorResponse(`Cow not found with id of ${req.params.cowId}`, 404)
+      new ErrorResponse(`Cattle not found with id of ${req.params.cattleId}`, 404)
     );
   }
 
   const stats = await prisma.Stats.findMany({
     where: {
-      cow_id: Number(req.params.cowId),
+      cattle_id: Number(req.params.cattleId),
       deletedAt: {
         equals: null,
       },
@@ -34,17 +34,17 @@ exports.getCowStats = asyncHandler(async (req, res, next) => {
   });
 });
 
-// @desc    Get stats for a cow at a specific date
-// @route   GET /api/v1/cows/:cowId/stats/:date
+// @desc    Get stats for a cattle at a specific date
+// @route   GET /api/v1/cattle/:cattleId/stats/:date
 // @access  Public
-exports.getCowStatsByDate = asyncHandler(async (req, res, next) => {
-  const cow = await prisma.Cows.findUnique({
-    where: { id: Number(req.params.cowId) },
+exports.getCattleStatsByDate = asyncHandler(async (req, res, next) => {
+  const cattle = await prisma.Cattle.findUnique({
+    where: { id: Number(req.params.cattleId) },
   });
 
-  if (!cow) {
+  if (!cattle) {
     return next(
-      new ErrorResponse(`Cow not found with id of ${req.params.cowId}`, 404)
+      new ErrorResponse(`Cattle not found with id of ${req.params.cattleId}`, 404)
     );
   }
 
@@ -52,7 +52,7 @@ exports.getCowStatsByDate = asyncHandler(async (req, res, next) => {
 
   const stats = await prisma.Stats.findFirst({
     where: {
-      cow_id: Number(req.params.cowId),
+      cattle_id: Number(req.params.cattleId),
       measuredAt: {
         gte: new Date(requestDate),
         lt: new Date(new Date(requestDate).getTime() + 24 * 60 * 60 * 1000),
@@ -65,7 +65,7 @@ exports.getCowStatsByDate = asyncHandler(async (req, res, next) => {
 
   if (!stats) {
     return next(
-      new ErrorResponse(`Cow stats not found for the specified date.`, 404)
+      new ErrorResponse(`Cattle stats not found for the specified date.`, 404)
     );
   }
 
@@ -75,17 +75,17 @@ exports.getCowStatsByDate = asyncHandler(async (req, res, next) => {
   });
 });
 
-// @desc    Create or update cow stats for a specific date
-// @route   POST /api/v1/cows/:cowId/stats/:date
+// @desc    Create or update cattle stats for a specific date
+// @route   POST /api/v1/cattle/:cattleId/stats/:date
 // @access  Private
-exports.createOrUpdateCowStats = asyncHandler(async (req, res, next) => {
-  const cow = await prisma.Cows.findUnique({
-    where: { id: Number(req.params.cowId) },
+exports.createOrUpdateCattleStats = asyncHandler(async (req, res, next) => {
+  const cattle = await prisma.Cattle.findUnique({
+    where: { id: Number(req.params.cattleId) },
   });
 
-  if (!cow) {
+  if (!cattle) {
     return next(
-      new ErrorResponse(`Cow not found with id of ${req.params.cowId}`, 404)
+      new ErrorResponse(`Cattle not found with id of ${req.params.cattleId}`, 404)
     );
   }
 
@@ -108,7 +108,7 @@ exports.createOrUpdateCowStats = asyncHandler(async (req, res, next) => {
     // Check if stats already exist for the current date
     const existingStats = await prisma.Stats.findFirst({
       where: {
-        cow_id: Number(req.params.cowId),
+        cattle_id: Number(req.params.cattleId),
         measuredAt: req.params.date,
       },
     });
@@ -119,7 +119,7 @@ exports.createOrUpdateCowStats = asyncHandler(async (req, res, next) => {
         where: { id: existingStats.id },
         data: {
           ...req.body,
-          cow_id: Number(existingStats.cowId),
+          cattle_id: Number(existingStats.cattleId),
         },
       });
 
@@ -132,7 +132,7 @@ exports.createOrUpdateCowStats = asyncHandler(async (req, res, next) => {
       const stats = await prisma.Stats.create({
         data: {
           ...req.body,
-          cow_id: Number(req.params.cowId),
+          cattle_id: Number(req.params.cattleId),
           measuredAt: req.params.date,
         },
       });
@@ -145,10 +145,10 @@ exports.createOrUpdateCowStats = asyncHandler(async (req, res, next) => {
   }
 });
 
-// @desc    Delete cow stats for a specific date (soft delete)
-// @route   PUT /api/v1/cows/:cowId/stats/:date
+// @desc    Delete cattle stats for a specific date (soft delete)
+// @route   PUT /api/v1/cattle/:cattleId/stats/:date
 // @access  Private (Admin only)
-exports.deleteCowStats = asyncHandler(async (req, res, next) => {
+exports.deleteCattleStats = asyncHandler(async (req, res, next) => {
   // Check if user is admin
   if (req.user.role !== "admin") {
     return next(
@@ -161,7 +161,7 @@ exports.deleteCowStats = asyncHandler(async (req, res, next) => {
 
   const statsToDelete = await prisma.Stats.findFirst({
     where: {
-      cow_id: Number(req.params.cowId),
+      cattle_id: Number(req.params.cattleId),
       measuredAt: req.params.date,
     },
   });
@@ -179,7 +179,7 @@ exports.deleteCowStats = asyncHandler(async (req, res, next) => {
   if (!statsToDelete) {
     return next(
       new ErrorResponse(
-        `Cow stats not found for cow with id ${req.params.cowId} on date ${req.params.date}`,
+        `Cattle stats not found for cattle with id ${req.params.cattleId} on date ${req.params.date}`,
         404
       )
     );

@@ -7,17 +7,17 @@ const cloudinary = require("cloudinary").v2;
 
 const ErrorResponse = require("../utils/errorResponse");
 
-// @desc    Upload cow image
-// @route   POST /api/v1/cows/:cowId/images
+// @desc    Upload cattle image
+// @route   POST /api/v1/cattle/:cattleId/images
 // @access  Private
-exports.cowPhotoUpload = asyncHandler(async (req, res, next) => {
-  const cow = await prisma.Cows.findUnique({
-    where: { id: Number(req.params.cowId) },
+exports.cattlePhotoUpload = asyncHandler(async (req, res, next) => {
+  const cattle = await prisma.Cattle.findUnique({
+    where: { id: Number(req.params.cattleId) },
   });
 
-  if (!cow) {
+  if (!cattle) {
     return next(
-      new ErrorResponse(`Cow not found with id of ${req.params.cowId}`, 404)
+      new ErrorResponse(`Cattle not found with id of ${req.params.cattleId}`, 404)
     );
   }
 
@@ -44,7 +44,7 @@ exports.cowPhotoUpload = asyncHandler(async (req, res, next) => {
   }
 
   // Create custom filename
-  file.name = `photo_${cow.id}${path.parse(file.name).ext}`;
+  file.name = `photo_${cattle.id}${path.parse(file.name).ext}`;
 
   cloudinary.uploader.upload(file.tempFilePath, async (err, result) => {
     if (err) {
@@ -54,7 +54,7 @@ exports.cowPhotoUpload = asyncHandler(async (req, res, next) => {
 
     await prisma.Images.create({
       data: {
-        cow_id: Number(req.params.cowId),
+        cattle_id: Number(req.params.cattleId),
         url: result.secure_url,
       },
     });
@@ -64,25 +64,6 @@ exports.cowPhotoUpload = asyncHandler(async (req, res, next) => {
       data: result.secure_url,
     });
   });
-
-  // file.mv(`${process.env.FILE_UPLOAD_PATH}/${file.name}`, async (err) => {
-  //   if (err) {
-  //     console.error(err);
-  //     return next(new ErrorResponse(`Problem with file upload`, 500));
-  //   }
-
-  //   await prisma.Images.create({
-  //     data: {
-  //       cow_id: Number(req.params.cowId),
-  //       url: file.name,
-  //     },
-  //   });
-
-  //   res.status(200).json({
-  //     success: true,
-  //     data: file.name,
-  //   });
-  // });
 });
 
 // Cloudinary Upload

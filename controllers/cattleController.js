@@ -4,51 +4,51 @@ const asyncHandler = require("express-async-handler");
 
 const ErrorResponse = require("../utils/errorResponse");
 
-// @desc    Get all cows
-// @route   GET /api/v1/cows
-// @route   GET /api/v1/farms/:farmId/cows
+// @desc    Get all cattle
+// @route   GET /api/v1/cattle
+// @route   GET /api/v1/farms/:farmId/cattle
 // @access  Public
-exports.getAllCows = asyncHandler(async (req, res, next) => {
+exports.getAllCattle = asyncHandler(async (req, res, next) => {
   if (Number(req.params.farmId)) {
-    const cows = await prisma.Cows.findMany({
+    const cattle = await prisma.Cattle.findMany({
       where: { farm_id: Number(req.params.farmId) },
     });
 
     return res.status(200).json({
       success: true,
-      count: cows.length,
-      data: cows,
+      count: cattle.length,
+      data: cattle,
     });
   } else {
     res.status(200).json(res.advancedResults);
   }
 });
 
-// @desc    Get single cow (ID)
-// @route   GET /api/v1/cows/:id
+// @desc    Get single cattle (ID)
+// @route   GET /api/v1/cattle/:id
 // @access  Public
-exports.getCow = asyncHandler(async (req, res, next) => {
-  const cow = await prisma.Cows.findUnique({
+exports.getCattle = asyncHandler(async (req, res, next) => {
+  const cattle = await prisma.Cattle.findUnique({
     where: { id: Number(req.params.id) },
   });
 
-  if (!cow) {
+  if (!cattle) {
     return next(
-      new ErrorResponse(`Cow not found with id of ${req.params.id}`, 404)
+      new ErrorResponse(`Cattle not found with id of ${req.params.id}`, 404)
     );
   }
 
   res.status(200).json({
     success: true,
-    count: cow.length,
-    data: cow,
+    count: cattle.length,
+    data: cattle,
   });
 });
 
-// @desc    Create new cow
-// @route   POST /api/v1/farms/:farmId/cows
+// @desc    Create new cattle
+// @route   POST /api/v1/farms/:farmId/cattle
 // @access  Private
-exports.createCow = asyncHandler(async (req, res, next) => {
+exports.createCattle = asyncHandler(async (req, res, next) => {
   req.body.farmId = Number(req.params.farmId);
 
   const farm = await prisma.Farms.findUnique({
@@ -62,61 +62,61 @@ exports.createCow = asyncHandler(async (req, res, next) => {
   }
 
   // Create an object with the required fields
-  const cowData = {
+  const cattleData = {
     name: req.body.name,
     farm_id: req.body.farmId,
   };
 
-  const cow = await prisma.Cows.create({
-    data: cowData,
+  const cattle = await prisma.Cattle.create({
+    data: cattleData,
   });
 
   res.status(201).json({
     success: true,
-    data: cow,
+    data: cattle,
   });
 });
 
-// @desc    Update cow
-// @route   PUT /api/v1/cows/:id
+// @desc    Update cattle
+// @route   PUT /api/v1/cattle/:id
 // @access  Private
-exports.updateCow = asyncHandler(async (req, res, next) => {
-  let cow = await prisma.Cows.findUnique({
+exports.updateCattle = asyncHandler(async (req, res, next) => {
+  let cattle = await prisma.Cattle.findUnique({
     where: { id: Number(req.params.id) },
   });
 
-  if (!cow) {
+  if (!cattle) {
     return next(
-      new ErrorResponse(`Cow not found with id of ${req.params.id}`, 404)
+      new ErrorResponse(`Cattle not found with id of ${req.params.id}`, 404)
     );
   }
 
-  cow = await prisma.Cows.update({
+  cattle = await prisma.Cattle.update({
     where: { id: Number(req.params.id) },
     data: req.body,
   });
 
   res.status(200).json({
     success: true,
-    data: cow,
+    data: cattle,
   });
 });
 
-// @desc    Delete cow
-// @route   DELETE /api/v1/cows/:id
+// @desc    Delete cattle
+// @route   DELETE /api/v1/cattle/:id
 // @access  Private
-exports.deleteCow = asyncHandler(async (req, res, next) => {
-  const cow = await prisma.Cows.findUnique({
+exports.deleteCattle = asyncHandler(async (req, res, next) => {
+  const cattle = await prisma.Cattle.findUnique({
     where: { id: Number(req.params.id) },
   });
 
-  if (!cow) {
+  if (!cattle) {
     return next(
-      new ErrorResponse(`Cow not found with id of ${req.params.id}`, 404)
+      new ErrorResponse(`Cattle not found with id of ${req.params.id}`, 404)
     );
   }
 
-  await prisma.Cows.delete({
+  await prisma.Cattle.delete({
     where: { id: Number(req.params.id) },
   });
 

@@ -1,9 +1,9 @@
 const express = require("express");
 const {
-  getCowStats,
-  getCowStatsByDate,
-  createOrUpdateCowStats,
-  deleteCowStats,
+  getCattleStats,
+  getCattleStatsByDate,
+  createOrUpdateCattleStats,
+  deleteCattleStats,
 } = require("../controllers/statsController");
 const { protect, authorize } = require("../middleware/accessControl");
 
@@ -14,12 +14,12 @@ router.use(cors());
 
 const advancedResults = require("../middleware/advancedResults");
 
-router.route("/").get(advancedResults("Stats"), getCowStats);
+router.route("/").get(advancedResults("Stats"), getCattleStats);
 
 router
   .route("/:date")
-  .get(getCowStatsByDate)
-  .post(protect, authorize("farmer", "admin"), createOrUpdateCowStats)
-  .put(protect, authorize("admin"), deleteCowStats);
+  .get(getCattleStatsByDate)
+  .post(protect, authorize("farmer", "admin"), createOrUpdateCattleStats)
+  .put(protect, authorize("admin"), deleteCattleStats);
 
 module.exports = router;

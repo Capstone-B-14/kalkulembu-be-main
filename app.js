@@ -9,7 +9,7 @@ const errorHandler = require("./middleware/errorHandler");
 const authRouter = require("./routes/auth");
 const farmsRouter = require("./routes/farms");
 const usersRouter = require("./routes/users");
-const cowsRouter = require("./routes/cows");
+const cattleRouter = require("./routes/cattle");
 const statsRouter = require("./routes/stats");
 
 const app = express();
@@ -30,7 +30,7 @@ app.use(
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/users", usersRouter);
 app.use("/api/v1/farms", farmsRouter);
-app.use("/api/v1/cows", cowsRouter);
+app.use("/api/v1/cattle", cattleRouter);
 app.use("/api/v1/stats", statsRouter);
 
 // Custom error handler
