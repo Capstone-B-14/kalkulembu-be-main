@@ -65,6 +65,7 @@ exports.createCattle = asyncHandler(async (req, res, next) => {
   const cattleData = {
     name: req.body.name,
     farm_id: req.body.farmId,
+    sex: req.body.sex,
   };
 
   const cattle = await prisma.Cattle.create({
