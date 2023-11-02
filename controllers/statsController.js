@@ -14,7 +14,10 @@ exports.getCattleStats = asyncHandler(async (req, res, next) => {
 
   if (!cattle) {
     return next(
-      new ErrorResponse(`Cattle not found with id of ${req.params.cattleId}`, 404)
+      new ErrorResponse(
+        `Cattle not found with id of ${req.params.cattleId}`,
+        404
+      )
     );
   }
 
@@ -34,6 +37,150 @@ exports.getCattleStats = asyncHandler(async (req, res, next) => {
   });
 });
 
+// @desc    Get aggregated weight for a cattle
+// @route   GET /api/v1/cattle/:cattleId/stats/weight
+// @access  Public
+exports.getCattleAvgWeight = asyncHandler(async (req, res, next) => {
+  const cattle = await prisma.Cattle.findUnique({
+    where: { id: Number(req.params.cattleId) },
+  });
+
+  if (!cattle) {
+    return next(
+      new ErrorResponse(
+        `Cattle not found with id of ${req.params.cattleId}`,
+        404
+      )
+    );
+  }
+
+  const stats = await prisma.Stats.findMany({
+    where: {
+      cattle_id: Number(req.params.cattleId),
+      deletedAt: {
+        equals: null,
+      },
+    },
+  });
+
+  const monthAverages = {};
+  const yearAverages = {};
+
+  stats.forEach((stat) => {
+    const month = stat.measuredAt.getUTCMonth() + 1;
+    const year = stat.measuredAt.getUTCFullYear();
+
+    const monthYearKey = `${month}-${year}`;
+    if (!monthAverages[monthYearKey]) {
+      monthAverages[monthYearKey] = {
+        totalWeight: 0,
+        count: 0,
+      };
+    }
+
+    monthAverages[monthYearKey].totalWeight += stat.weight;
+    monthAverages[monthYearKey].count += 1;
+
+    if (!yearAverages[year]) {
+      yearAverages[year] = {
+        totalWeight: 0,
+        count: 0,
+      };
+    }
+
+    yearAverages[year].totalWeight += stat.weight;
+    yearAverages[year].count += 1;
+  });
+
+  const monthlyAvg = {};
+  for (const [key, data] of Object.entries(monthAverages)) {
+    monthlyAvg[key] = data.totalWeight / data.count;
+  }
+
+  const yearlyAvg = {};
+  for (const [key, data] of Object.entries(yearAverages)) {
+    yearlyAvg[key] = data.totalWeight / data.count;
+  }
+
+  res.status(200).json({
+    success: true,
+    data: {
+      monthlyAverage: monthlyAvg,
+      yearlyAverage: yearlyAvg,
+    },
+  });
+});
+
+// @desc    Get the latest stats for a cattle
+// @route   GET /api/v1/cattle/:cattleId/stats/latest
+// @access  Public
+exports.getLatestCattleStats = asyncHandler(async (req, res, next) => {
+  const latestStats = await prisma.Stats.findFirst({
+    where: {
+      cattle_id: Number(req.params.cattleId),
+      deletedAt: {
+        equals: null,
+      },
+    },
+    orderBy: {
+      measuredAt: "desc",
+    },
+  });
+
+  if (!latestStats) {
+    return next(
+      new ErrorResponse(
+        `No latest stats found for cattle with id ${req.params.cattleId}.`,
+        404
+      )
+    );
+  }
+
+  res.status(200).json({
+    success: true,
+    data: latestStats,
+  });
+});
+
+// @desc    Get cattle with weight above a threshold
+// @route   GET /api/v1/cattle/stats/weight-above/:weight
+// @access  Public
+exports.getCattleAboveWeight = asyncHandler(async (req, res, next) => {
+  const weightThreshold = Number(req.params.weight);
+  const cattle = await prisma.Cattle.findMany({
+    where: {
+      stats: {
+        some: {
+          weight: {
+            gte: weightThreshold,
+          },
+          deletedAt: {
+            equals: null,
+          },
+        },
+      },
+    },
+    include: {
+      stats: true,
+    },
+  });
+
+  if (cattle.length == 0) {
+    return next(
+      new ErrorResponse(
+        `No cattle found with weight above ${weightThreshold}.`,
+        404
+      )
+    );
+  }
+
+  res.status(200).json({
+    success: true,
+    count: cattle.length,
+    data: cattle,
+  });
+});
+
 // @desc    Get stats for a cattle at a specific date
 // @route   GET /api/v1/cattle/:cattleId/stats/:date
 // @access  Public
@@ -44,7 +191,10 @@ exports.getCattleStatsByDate = asyncHandler(async (req, res, next) => {
 
   if (!cattle) {
     return next(
-      new ErrorResponse(`Cattle not found with id of ${req.params.cattleId}`, 404)
+      new ErrorResponse(
+        `Cattle not found with id of ${req.params.cattleId}`,
+        404
+      )
     );
   }
 
@@ -85,7 +235,10 @@ exports.createOrUpdateCattleStats = asyncHandler(async (req, res, next) => {
 
   if (!cattle) {
     return next(
-      new ErrorResponse(`Cattle not found with id of ${req.params.cattleId}`, 404)
+      new ErrorResponse(
+        `Cattle not found with id of ${req.params.cattleId}`,
+        404
+      )
     );
   }
 

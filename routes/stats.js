@@ -1,7 +1,10 @@
 const express = require("express");
 const {
   getCattleStats,
+  getCattleAvgWeight,
+  getLatestCattleStats,
   getCattleStatsByDate,
+  getCattleAboveWeight,
   createOrUpdateCattleStats,
   deleteCattleStats,
 } = require("../controllers/statsController");
@@ -15,6 +18,12 @@ router.use(cors());
 const advancedResults = require("../middleware/advancedResults");
 
 router.route("/").get(advancedResults("Stats"), getCattleStats);
+
+router.route("/weight").get(getCattleAvgWeight);
+
+router.route("/weight-above/:weight").get(getCattleAboveWeight);
+
+router.route("/latest").get(getLatestCattleStats);
 
 router
   .route("/:date")
