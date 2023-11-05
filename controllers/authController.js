@@ -113,7 +113,6 @@ exports.updateProfile = asyncHandler(async (req, res, next) => {
     name: req.body.name,
     email: req.body.email,
     phone: req.body.phone,
-    photo: req.body.photo,
   };
 
   const user = await prisma.Users.update({

@@ -3,6 +3,7 @@ const prisma = new PrismaClient();
 const asyncHandler = require("express-async-handler");
 
 const ErrorResponse = require("../utils/errorResponse");
+const { uploadToCloudinary } = require('../utils/cloudinary');
 
 // @desc    Get all cattle
 // @route   GET /api/v1/cattle
@@ -125,4 +126,25 @@ exports.deleteCattle = asyncHandler(async (req, res, next) => {
     success: true,
     data: {},
   });
+});
+
+exports.cattlePhotoUpload = asyncHandler(async (req, res, next) => {
+  // ... previous logic to check for file and cattle
+  try {
+    const imageUrl = await uploadToCloudinary(file);
+
+    await prisma.Images.create({
+      data: {
+        cattle_id: Number(req.params.cattleId),
+        url: imageUrl,
+      },
+    });
+
+    res.status(200).json({
+      success: true,
+      data: imageUrl,
+    });
+  } catch (error) {
+    next(error);
+  }
 });

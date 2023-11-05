@@ -1,15 +1,11 @@
 const multer = require("multer");
-const path = require("path");
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, path.join(__dirname, process.env.FILE_UPLOAD_PATH)); // Adjust the destination directory
+    cb(null, 'uploads/'); // The path to where you want to save the images
   },
   filename: function (req, file, cb) {
-    const extname = path.extname(file.originalname);
-    const cattleId = req.params.cattleId; // Extract cattleId from the route parameters
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    cb(null, `photo_${cattleId}_${uniqueSuffix}${extname}`);
+    cb(null, Date.now() + '-' + file.originalname);
   },
 });
 
