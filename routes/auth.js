@@ -8,6 +8,7 @@ const {
   updateProfile,
   updatePassword,
 } = require("../controllers/authController");
+const { userPhotoUpload } = require("../controllers/imagesController");
 const { protect, authorize } = require("../middleware/accessControl");
 
 const router = express.Router({ mergeParams: true });
@@ -28,6 +29,9 @@ router
 router
   .route("/updateprofile")
   .put(protect, authorize("user", "farmer", "admin"), updateProfile);
+router
+  .route("/updatephoto")
+  .put(protect, authorize("farmer", "admin"), userPhotoUpload);
 router
   .route("/updatepassword")
   .put(protect, authorize("user", "farmer", "admin"), updatePassword);

@@ -2,9 +2,9 @@ const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 const asyncHandler = require("express-async-handler");
 const path = require("path");
-
 const cloudinary = require("cloudinary").v2;
 
+const { uploadToCloudinary } = require("../utils/cloudinary")
 const ErrorResponse = require("../utils/errorResponse");
 
 // @desc    Upload cattle image
@@ -25,70 +25,70 @@ exports.cattlePhotoUpload = asyncHandler(async (req, res, next) => {
     return next(new ErrorResponse(`Please upload a file`, 400));
   }
 
-  console.log(req.files);
   const file = req.files.file;
 
-  // Make sure the image is a photo
-  if (!file.mimetype.startsWith("image")) {
-    return next(new ErrorResponse(`Please upload an image file`, 400));
-  }
-
-  // Check filesize
-  if (file.size > process.env.MAX_FILE_UPLOAD) {
-    return next(
-      new ErrorResponse(
-        `Ukuran foto maksimal ${process.env.MAX_FILE_UPLOAD}`,
-        400
-      )
-    );
-  }
-
-  // Create custom filename
-  file.name = `photo_${cattle.id}${path.parse(file.name).ext}`;
-
-  cloudinary.uploader.upload(file.tempFilePath, async (err, result) => {
-    if (err) {
-      console.log(err);
-      return next(new ErrorResponse(`Problem with file upload`, 500));
-    }
-
+  try {
+    const imageUrl = await uploadToCloudinary(file, cattle.id);
+    console.log(imageUrl)
     await prisma.Images.create({
       data: {
         cattle_id: Number(req.params.cattleId),
-        url: result.secure_url,
+        url: imageUrl,
       },
     });
 
     res.status(200).json({
       success: true,
-      data: result.secure_url,
+      data: imageUrl,
     });
-  });
-});
 
-// Cloudinary Upload
-cloudinary.config({
-  cloud_name: process.env.CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-  secure: process.env.NODE_ENV === "development" ? false : true,
-});
-
-exports.uploadCloudinary = asyncHandler(async (imagePath, req, res, next) => {
-  // Use the uploaded file's name as the asset's public ID and
-  // allow overwriting the asset with new versions
-  const options = {
-    use_filename: true,
-    unique_filename: false,
-    overwrite: true,
-  };
-
-  try {
-    // Upload the image
-    const result = await cloudinary.uploader.upload(imagePath, options);
-    console.log(result);
-    return result.public_id;
   } catch (error) {
-    console.error(error);
+    next(error);
   }
 });
+
+
+// @desc    Upload user profile image
+// @route   PUT /api/v1/users/:userId/photo
+// @access  Private
+exports.userPhotoUpload = asyncHandler(async (req, res, next) => {
+  const user = await prisma.Users.findUnique({
+    where: { id: req.user.id },
+  });
+
+  if (!user) {
+    return next(new ErrorResponse(`User not found with id of ${req.user.id}`, 404));
+  }
+
+  if (!req.files) {
+    return next(new ErrorResponse('Please upload a file', 400));
+  }
+
+  const file = req.files.file;
+
+  if (!file) {
+    return next(new ErrorResponse('File object is undefined', 400));
+  }
+
+  try {
+    const imageUrl = await uploadToCloudinary(file, user.id);
+    await prisma.Users.update({
+      where: { id: user.id },
+      data: {
+        photo: imageUrl,
+      },
+    });
+
+    res.status(200).json({
+      success: true,
+      data: imageUrl,
+    });
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
+
+
+
