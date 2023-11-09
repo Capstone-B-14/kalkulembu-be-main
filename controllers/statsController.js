@@ -272,7 +272,7 @@ exports.createOrUpdateCattleStats = asyncHandler(async (req, res, next) => {
         where: { id: existingStats.id },
         data: {
           ...req.body,
-          cattle_id: Number(existingStats.cattleId),
+          cattle_id: Number(req.params.cattleId),
         },
       });
 
