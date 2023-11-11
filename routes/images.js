@@ -8,6 +8,8 @@ const router = express.Router({ mergeParams: true });
 const cors = require("cors");
 router.use(cors());
 
-router.route("/").post(protect, authorize("farmer", "admin"), cattlePhotoUpload);
+router
+  .route("/")
+  .post(protect, authorize("farmer", "admin"), cattlePhotoUpload);
 
 module.exports = router;

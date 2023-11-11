@@ -1,14 +1,12 @@
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 const asyncHandler = require("express-async-handler");
-const path = require("path");
-const cloudinary = require("cloudinary").v2;
 
-const { uploadToCloudinary } = require("../utils/cloudinary")
+const { uploadToCloudinary } = require("../utils/cloudinary");
 const ErrorResponse = require("../utils/errorResponse");
 
 // @desc    Upload cattle image
-// @route   POST /api/v1/cattle/:cattleId/images
+// @route   GET /api/v1/cattle/:cattleId/images
 // @access  Private
 exports.cattlePhotoUpload = asyncHandler(async (req, res, next) => {
   const cattle = await prisma.Cattle.findUnique({
@@ -17,7 +15,10 @@ exports.cattlePhotoUpload = asyncHandler(async (req, res, next) => {
 
   if (!cattle) {
     return next(
-      new ErrorResponse(`Cattle not found with id of ${req.params.cattleId}`, 404)
+      new ErrorResponse(
+        `Cattle not found with id of ${req.params.cattleId}`,
+        404
+      )
     );
   }
 
@@ -29,7 +30,7 @@ exports.cattlePhotoUpload = asyncHandler(async (req, res, next) => {
 
   try {
     const imageUrl = await uploadToCloudinary(file, cattle.id);
-    console.log(imageUrl)
+    console.log(imageUrl);
     await prisma.Images.create({
       data: {
         cattle_id: Number(req.params.cattleId),
@@ -41,12 +42,63 @@ exports.cattlePhotoUpload = asyncHandler(async (req, res, next) => {
       success: true,
       data: imageUrl,
     });
-
   } catch (error) {
     next(error);
   }
 });
 
+// @desc    Save cattle image URL
+// @route   POST /api/v1/cattle/:cattleId/saveImageUrl
+// @access  Private
+exports.saveCattleImageUrl = asyncHandler(async (req, res, next) => {
+  const { imageUrl } = req.body; // Assuming the image URL is sent in the request body
+  const { cattleId } = req.params;
+
+  // Check if cattleId is provided and valid
+  if (!cattleId) {
+    return next(new ErrorResponse("Cattle ID is required", 400));
+  }
+
+  // Validate the URL (basic validation here, consider more robust checks)
+  if (
+    !imageUrl ||
+    typeof imageUrl !== "string" ||
+    !imageUrl.startsWith("http")
+  ) {
+    return next(new ErrorResponse("A valid image URL is required", 400));
+  }
+
+  // Find the cattle record in the database
+  const cattle = await prisma.Cattle.findUnique({
+    where: { id: Number(cattleId) },
+  });
+
+  // If cattle not found, return error
+  if (!cattle) {
+    return next(
+      new ErrorResponse(`Cattle not found with id of ${cattleId}`, 404)
+    );
+  }
+
+  try {
+    // Save the image URL to the Images table
+    await prisma.Images.create({
+      data: {
+        cattle_id: Number(cattleId),
+        url: imageUrl,
+      },
+    });
+
+    // Return success response
+    res.status(200).json({
+      success: true,
+      data: imageUrl,
+    });
+  } catch (error) {
+    // Handle any other errors
+    next(new ErrorResponse("Error saving image URL", 500));
+  }
+});
 
 // @desc    Upload user profile image
 // @route   PUT /api/v1/users/:userId/photo
@@ -57,17 +109,19 @@ exports.userPhotoUpload = asyncHandler(async (req, res, next) => {
   });
 
   if (!user) {
-    return next(new ErrorResponse(`User not found with id of ${req.user.id}`, 404));
+    return next(
+      new ErrorResponse(`User not found with id of ${req.user.id}`, 404)
+    );
   }
 
   if (!req.files) {
-    return next(new ErrorResponse('Please upload a file', 400));
+    return next(new ErrorResponse("Please upload a file", 400));
   }
 
   const file = req.files.file;
 
   if (!file) {
-    return next(new ErrorResponse('File object is undefined', 400));
+    return next(new ErrorResponse("File object is undefined", 400));
   }
 
   try {
@@ -88,7 +142,3 @@ exports.userPhotoUpload = asyncHandler(async (req, res, next) => {
     next(error);
   }
 });
-
-
-
-

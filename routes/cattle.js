@@ -6,6 +6,7 @@ const {
   updateCattle,
   deleteCattle,
 } = require("../controllers/cattleController");
+const { saveCattleImageUrl } = require("../controllers/imagesController");
 const { protect, authorize } = require("../middleware/accessControl");
 
 const router = express.Router({ mergeParams: true });
@@ -20,7 +21,7 @@ const imagesRouter = require("./images");
 
 router.use("/:cattleId/stats", statsRouter);
 router.use("/:cattleId/stats/:date", statsRouter);
-router.use("/:cattleId/images", imagesRouter)
+router.use("/:cattleId/images", imagesRouter);
 
 router
   .route("/")
@@ -32,5 +33,7 @@ router
   .get(getCattle)
   .put(protect, authorize("farmer", "admin"), updateCattle)
   .delete(protect, authorize("farmer", "admin"), deleteCattle);
+
+router.post("/:cattleId/saveImageUrl", protect, saveCattleImageUrl);
 
 module.exports = router;
