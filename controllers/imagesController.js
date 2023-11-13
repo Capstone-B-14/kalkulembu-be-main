@@ -47,6 +47,33 @@ exports.cattlePhotoUpload = asyncHandler(async (req, res, next) => {
   }
 });
 
+// @desc    Get cattle images
+// @route   GET /api/v1/cattle/:cattleId/images
+// @access  Private
+exports.getCattleImages = asyncHandler(async (req, res, next) => {
+  const cattle = await prisma.Cattle.findUnique({
+    where: { id: Number(req.params.cattleId) },
+  });
+
+  if (!cattle) {
+    return next(
+      new ErrorResponse(
+        `Cattle not found with id of ${req.params.cattleId}`,
+        404
+      )
+    );
+  }
+
+  const images = await prisma.Images.findMany({
+    where: { cattle_id: Number(req.params.cattleId) },
+  });
+
+  res.status(200).json({
+    success: true,
+    data: images,
+  });
+});
+
 // @desc    Save cattle image URL
 // @route   POST /api/v1/cattle/:cattleId/saveImageUrl
 // @access  Private

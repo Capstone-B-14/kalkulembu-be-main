@@ -1,5 +1,8 @@
 const express = require("express");
-const { cattlePhotoUpload } = require("../controllers/imagesController");
+const {
+  cattlePhotoUpload,
+  getCattleImages,
+} = require("../controllers/imagesController");
 const { protect, authorize } = require("../middleware/accessControl");
 // const upload = require("../middleware/multer");
 
@@ -10,6 +13,6 @@ router.use(cors());
 
 router
   .route("/")
+  .get(getCattleImages)
   .post(protect, authorize("farmer", "admin"), cattlePhotoUpload);
-
 module.exports = router;
