@@ -3,7 +3,7 @@ const prisma = new PrismaClient();
 const asyncHandler = require("express-async-handler");
 
 const ErrorResponse = require("../utils/errorResponse");
-const { uploadToCloudinary } = require('../utils/cloudinary');
+const { uploadToCloudinary } = require("../utils/cloudinary");
 
 // @desc    Get all cattle
 // @route   GET /api/v1/cattle
@@ -44,6 +44,60 @@ exports.getCattle = asyncHandler(async (req, res, next) => {
     count: cattle.length,
     data: cattle,
   });
+});
+
+// @desc    Get latest cattle stats in a farm
+// @route   GET /api/v1/farms/:farmId/cattle/latest
+// @access  Public
+exports.getLatestCattleStatsPerFarm = asyncHandler(async (req, res, next) => {
+  if (Number(req.params.farmId)) {
+    const cattleInFarm = await prisma.Cattle.findMany({
+      where: { farm_id: Number(req.params.farmId) },
+    });
+
+    if (!cattleInFarm) {
+      return next(
+        new ErrorResponse(
+          `Cattle not found for farm with id ${req.params.farmId}`,
+          404
+        )
+      );
+    }
+
+    const cattleWithLatestStats = [];
+
+    for (const cattle of cattleInFarm) {
+      const latestStats = await prisma.Stats.findFirst({
+        where: {
+          cattle_id: cattle.id,
+          deletedAt: {
+            equals: null,
+          },
+        },
+        orderBy: {
+          measuredAt: "desc",
+        },
+      });
+
+      cattle.latestStats = latestStats || null;
+      cattleWithLatestStats.push(cattle);
+
+      if (!latestStats) {
+        return next(
+          new ErrorResponse(
+            `No latest stats found for cattle with id ${req.params.cattleId}.`,
+            404
+          )
+        );
+      }
+    }
+
+    res.status(200).json({
+      success: true,
+      count: cattleWithLatestStats.length,
+      data: cattleWithLatestStats,
+    });
+  }
 });
 
 // @desc    Create new cattle
