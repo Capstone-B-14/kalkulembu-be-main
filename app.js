@@ -3,6 +3,7 @@ const path = require("path");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 const fileupload = require("express-fileupload");
+const cors = require("cors");
 
 const errorHandler = require("./middleware/errorHandler");
 
@@ -25,6 +26,8 @@ app.use(
     tempFileDir: "/tmp/",
   })
 );
+
+app.use(cors()); // Registering CORS before any routes
 
 // Registering routers
 app.use("/api/v1/auth", authRouter);

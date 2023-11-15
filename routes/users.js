@@ -13,8 +13,8 @@ const farmsRouter = require("./farms");
 
 const router = express.Router({ mergeParams: true });
 
-const cors = require("cors");
-router.use(cors());
+// const cors = require("cors");
+// router.use(cors());
 
 const advancedResults = require("../middleware/advancedResults");
 
