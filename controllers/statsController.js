@@ -229,6 +229,18 @@ exports.getCattleStatsByDate = asyncHandler(async (req, res, next) => {
 // @route   POST /api/v1/cattle/:cattleId/stats/:date
 // @access  Private
 exports.createOrUpdateCattleStats = asyncHandler(async (req, res, next) => {
+  const cattleId = Number(req.params.cattleId);
+  const statsDate = new Date(req.params.date);
+
+  if (!statsDate.getTime()) {
+    return next(new ErrorResponse(`Invalid date format.`, 400));
+  }
+
+  // Restrict creating or updating stats only for the current date (TODAY ONLY)
+  const currentDate = new Date();
+  const currentDateString = new Date().toISOString().split("T")[0];
+  const requestDate = statsDate.toISOString().split("T")[0];
+
   const cattle = await prisma.Cattle.findUnique({
     where: { id: Number(req.params.cattleId) },
   });
@@ -242,38 +254,35 @@ exports.createOrUpdateCattleStats = asyncHandler(async (req, res, next) => {
     );
   }
 
-  // Restrict creating or updating stats only for the current date (TODAY ONLY)
-  const currentDate = new Date().toISOString().split("T")[0];
-  console.log(currentDate);
-
-  const requestDate = req.params.date.split("T")[0];
-
   // No future or past dates allowed
-  if (requestDate > currentDate) {
+  if (requestDate > currentDateString) {
     return next(
       new ErrorResponse(`Cannot create or update stats for future dates.`, 400)
     );
-  } else if (requestDate < currentDate) {
+  } else if (requestDate < currentDateString) {
     return next(
       new ErrorResponse(`Cannot create or update stats for past dates.`, 400)
     );
   } else {
     // Check if stats already exist for the current date
-    const existingStats = await prisma.Stats.findFirst({
+    const latestStats = await prisma.Stats.findFirst({
       where: {
-        cattle_id: Number(req.params.cattleId),
-        measuredAt: req.params.date,
+        cattle_id: cattleId,
+        measuredAt: {
+          gte: new Date(requestDate),
+          lt: new Date(currentDate.setDate(currentDate.getDate() + 1)), // next day
+        },
+      },
+      orderBy: {
+        measuredAt: "desc",
       },
     });
 
-    if (existingStats) {
+    if (latestStats) {
       // Update stats
       const updatedStats = await prisma.Stats.update({
-        where: { id: existingStats.id },
-        data: {
-          ...req.body,
-          cattle_id: Number(req.params.cattleId),
-        },
+        where: { id: latestStats.id },
+        data: req.body,
       });
 
       res.status(200).json({
@@ -285,7 +294,7 @@ exports.createOrUpdateCattleStats = asyncHandler(async (req, res, next) => {
       const stats = await prisma.Stats.create({
         data: {
           ...req.body,
-          cattle_id: Number(req.params.cattleId),
+          cattle_id: cattleId,
           measuredAt: req.params.date,
         },
       });
