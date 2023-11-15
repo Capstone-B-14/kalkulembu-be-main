@@ -6,6 +6,7 @@ const {
   updateCattle,
   deleteCattle,
   getLatestCattleStatsPerFarm,
+  getOneCattleStatsPerFarm,
 } = require("../controllers/cattleController");
 const { saveCattleImageUrl } = require("../controllers/imagesController");
 const { protect, authorize } = require("../middleware/accessControl");
@@ -30,6 +31,8 @@ router
   .post(protect, authorize("farmer", "admin"), createCattle);
 
 router.route("/latest").get(getLatestCattleStatsPerFarm);
+
+router.route("/:cattleId/latest").get(getOneCattleStatsPerFarm);
 
 router
   .route("/:id")

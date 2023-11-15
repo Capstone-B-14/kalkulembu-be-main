@@ -55,6 +55,8 @@ exports.getLatestCattleStatsPerFarm = asyncHandler(async (req, res, next) => {
       where: { farm_id: Number(req.params.farmId) },
     });
 
+    console.log(cattleInFarm);
+
     if (!cattleInFarm) {
       return next(
         new ErrorResponse(
@@ -67,6 +69,65 @@ exports.getLatestCattleStatsPerFarm = asyncHandler(async (req, res, next) => {
     const cattleWithLatestStats = [];
 
     for (const cattle of cattleInFarm) {
+      const latestStats = await prisma.Stats.findFirst({
+        where: {
+          cattle_id: cattle.id,
+          deletedAt: {
+            equals: null,
+          },
+        },
+        orderBy: {
+          measuredAt: "desc",
+        },
+      });
+
+      cattle.latestStats = latestStats || null;
+      cattleWithLatestStats.push(cattle);
+
+      if (!latestStats) {
+        return next(
+          new ErrorResponse(
+            `No latest stats found for cattle with id ${req.params.cattleId}.`,
+            404
+          )
+        );
+      }
+    }
+
+    res.status(200).json({
+      success: true,
+      count: cattleWithLatestStats.length,
+      data: cattleWithLatestStats,
+    });
+  }
+});
+
+// @desc    Get latest cattle stats in a farm (ID)
+// @route   GET /api/v1/farms/:farmId/cattle/:cattleId/latest
+// @access  Public
+exports.getOneCattleStatsPerFarm = asyncHandler(async (req, res, next) => {
+  if (Number(req.params.farmId) && Number(req.params.cattleId)) {
+    const cattleInFarm = await prisma.Cattle.findUnique({
+      where: {
+        id: Number(req.params.cattleId),
+        farm_id: Number(req.params.farmId),
+      },
+    });
+
+    if (!cattleInFarm) {
+      return next(
+        new ErrorResponse(
+          `Cattle not found for farm with id ${req.params.farmId}`,
+          404
+        )
+      );
+    }
+
+    cattleArray = [];
+    const cattleWithLatestStats = [];
+    cattleArray.push(cattleInFarm);
+
+    for (const cattle of cattleArray) {
       const latestStats = await prisma.Stats.findFirst({
         where: {
           cattle_id: cattle.id,
