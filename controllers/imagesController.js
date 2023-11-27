@@ -74,6 +74,29 @@ exports.getCattleImages = asyncHandler(async (req, res, next) => {
   });
 });
 
+// @desc    Get ONE latest cattle image for all cattle
+// @route   GET /api/v1/images/one/latest
+// @access  Private
+exports.getOneLatestCattleImageForEachCattle = asyncHandler(
+  async (req, res, next) => {
+    try {
+      const images = await prisma.$queryRaw`
+          SELECT DISTINCT ON (cattle_id) *
+          FROM public."Images"
+          WHERE cattle_id IS NOT NULL
+          ORDER BY cattle_id, created_at DESC
+      `;
+
+      res.status(200).json({
+        success: true,
+        data: images,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
 // @desc    Save cattle image URL
 // @route   POST /api/v1/cattle/:cattleId/saveImageUrl
 // @access  Private
