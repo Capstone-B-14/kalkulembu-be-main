@@ -67,8 +67,7 @@ exports.getLatestCattleStatsPerFarm = asyncHandler(async (req, res, next) => {
     const cattleWithLatestStats = [];
 
     for (const cattle of cattleInFarm) {
-      console.log(cattle);
-      const latestStats = await prisma.Stats.findMany({
+      const latestStats = await prisma.Stats.findFirst({
         where: {
           cattle_id: cattle.id,
           deletedAt: {
@@ -79,18 +78,25 @@ exports.getLatestCattleStatsPerFarm = asyncHandler(async (req, res, next) => {
           measuredAt: "desc",
         },
       });
-      console.log(latestStats);
 
-      cattle.latestStats = latestStats || null;
+      cattle.latestStats = latestStats;
       cattleWithLatestStats.push(cattle);
 
+      // If there are no latest stats, create a dummy stats object
       if (!latestStats) {
-        return next(
-          new ErrorResponse(
-            `No latest stats found for cattle with id ${req.params.cattleId}.`,
-            404
-          )
-        );
+        cattle.latestStats = {
+          id: null,
+          cattle_id: cattle.id,
+          age: 0, // Default age
+          weight: 0, // Default weight
+          healthy: false, // Default health status
+          measuredAt: new Date().toISOString(), // Current timestamp
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+          deletedAt: null,
+        };
+      } else {
+        cattle.latestStats = latestStats;
       }
     }
 
