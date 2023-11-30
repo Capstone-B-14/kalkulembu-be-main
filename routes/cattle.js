@@ -24,7 +24,7 @@ const imagesRouter = require("./images");
 router.use("/:cattleId/stats", statsRouter);
 router.use("/:cattleId/stats/:date", statsRouter);
 router.use("/:cattleId/images", imagesRouter);
-router.use("/images", imagesRouter)
+router.use("/images", imagesRouter);
 
 router
   .route("/")

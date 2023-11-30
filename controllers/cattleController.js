@@ -55,8 +55,6 @@ exports.getLatestCattleStatsPerFarm = asyncHandler(async (req, res, next) => {
       where: { farm_id: Number(req.params.farmId) },
     });
 
-    console.log(cattleInFarm);
-
     if (!cattleInFarm) {
       return next(
         new ErrorResponse(
@@ -69,7 +67,8 @@ exports.getLatestCattleStatsPerFarm = asyncHandler(async (req, res, next) => {
     const cattleWithLatestStats = [];
 
     for (const cattle of cattleInFarm) {
-      const latestStats = await prisma.Stats.findFirst({
+      console.log(cattle);
+      const latestStats = await prisma.Stats.findMany({
         where: {
           cattle_id: cattle.id,
           deletedAt: {
@@ -80,6 +79,7 @@ exports.getLatestCattleStatsPerFarm = asyncHandler(async (req, res, next) => {
           measuredAt: "desc",
         },
       });
+      console.log(latestStats);
 
       cattle.latestStats = latestStats || null;
       cattleWithLatestStats.push(cattle);
