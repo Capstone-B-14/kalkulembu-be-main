@@ -1,0 +1,1116 @@
+{
+	"info": {
+		"_postman_id": "2129c64b-e485-42db-9187-a3d8a7e4055a",
+		"name": "Kalkulembu",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_uid": "23369815-2129c64b-e485-42db-9187-a3d8a7e4055a"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Register",
+					"id": "d036d5b0-bc8e-492a-b38d-0f6bc774ced8",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"name\": \"Ngademin Singapore\",\r\n\t\"email\": \"admin@example.com\",\r\n\t\"password\": \"12345678\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{localURL}}/auth/register",
+							"host": [
+								"{{localURL}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"id": "5b2d786b-46af-45a4-a6d0-a6d306ddf964",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"email\": \"farmer@example.com\",\r\n\t\"password\": \"12345678\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{localURL}}/auth/login",
+							"host": [
+								"{{localURL}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Log Out",
+					"id": "01fcae83-b35d-40c2-922d-acf54ec17cde",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{localURL}}/auth/logout",
+							"host": [
+								"{{localURL}}"
+							],
+							"path": [
+								"auth",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Profile",
+					"id": "4b480c9b-74a8-425b-a010-30ac3771061d",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{localURL}}/auth/profile",
+							"host": [
+								"{{localURL}}"
+							],
+							"path": [
+								"auth",
+								"profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Profile",
+					"id": "a81830d7-a686-4ba6-8237-b1a2b292a2d8",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Petesternak Edited\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{localURL}}/auth/updateprofile",
+							"host": [
+								"{{localURL}}"
+							],
+							"path": [
+								"auth",
+								"updateprofile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Photo",
+					"id": "871e51a2-971f-4129-b62e-4b5c9c2b77eb",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/C:/Users/Daffa Romero/Downloads/751.jpg"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{localURL}}/auth/updatephoto",
+							"host": [
+								"{{localURL}}"
+							],
+							"path": [
+								"auth",
+								"updatephoto"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Password",
+					"id": "ea2fb28a-7444-4cc9-bd6a-cc766881d08e",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"currentPassword\": \"123456\",\r\n\t\"newPassword\": \"1234567\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{localURL}}/auth/updatepassword",
+							"host": [
+								"{{localURL}}"
+							],
+							"path": [
+								"auth",
+								"updatepassword"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"id": "fe6e9eda-bbae-4e81-bdb0-012438d7eb77"
+		},
+		{
+			"name": "Users (Admin)",
+			"item": [
+				{
+					"name": "Get All Users",
+					"id": "6a8c99fe-b673-4b99-932b-45a2c1a8e5ee",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{localURL}}/users",
+							"host": [
+								"{{localURL}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update User",
+					"id": "0061608f-2af7-4249-8aac-f897b271387c",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "\t\t{\r\n\t\t\t\"name\": \"Petesternak\",\r\n\t\t\t\"email\": \"farmer@example.com\",\r\n\t\t\t\"role\": \"farmer\"\r\n\t\t}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{localURL}}/users/2",
+							"host": [
+								"{{localURL}}"
+							],
+							"path": [
+								"users",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete User",
+					"id": "5ca0c2be-eea3-44f6-bf8f-e864aadae520",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{localURL}}/users/1",
+							"host": [
+								"{{localURL}}"
+							],
+							"path": [
+								"users",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"id": "7a997238-8537-4f7c-9775-ae1650957f01"
+		},
+		{
+			"name": "Cattle",
+			"item": [
+				{
+					"name": "Get All Cattle",
+					"id": "0ba1440b-7f02-4098-b4dc-0f498c488866",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{localURL}}/cattle",
+							"host": [
+								"{{localURL}}"
+							],
+							"path": [
+								"cattle"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get One (ID)",
+					"id": "82c1b137-6db8-40e6-9e1b-b1560dad992b",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{localURL}}/cattle/1",
+							"host": [
+								"{{localURL}}"
+							],
+							"path": [
+								"cattle",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Cattle in a Farm",
+					"id": "1ac4dd52-7762-4101-b830-b24e5947ad6e",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{localURL}}/farms/1/cattle",
+							"host": [
+								"{{localURL}}"
+							],
+							"path": [
+								"farms",
+								"1",
+								"cattle"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Cattle Data + Stats",
+					"id": "5de2e314-1af2-4f10-8c3a-1b8c721fcbd6",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{localURL}}/farms/1/cattle/latest",
+							"host": [
+								"{{localURL}}"
+							],
+							"path": [
+								"farms",
+								"1",
+								"cattle",
+								"latest"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get One Cattle Data + Stats",
+					"id": "e9e4d20c-b4d5-4f28-90e6-a023b08d6684",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{localURL}}/farms/1/cattle/1/latest",
+							"host": [
+								"{{localURL}}"
+							],
+							"path": [
+								"farms",
+								"1",
+								"cattle",
+								"1",
+								"latest"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create New Cattle",
+					"id": "c719c0a7-cac8-4eed-9399-938b08edbf32",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"name\": \"Singaporean Red Bull\",\r\n\t\"sex\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{localURL}}/farms/1/cattle",
+							"host": [
+								"{{localURL}}"
+							],
+							"path": [
+								"farms",
+								"1",
+								"cattle"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Cattle",
+					"id": "c5278862-7eb0-4973-9219-d4294816380f",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"name\": \"Aventador SVJ\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{localURL}}/farms/1/cattle/3",
+							"host": [
+								"{{localURL}}"
+							],
+							"path": [
+								"farms",
+								"1",
+								"cattle",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Cattle",
+					"id": "2da3232f-e4cc-44a1-ad59-58de4e0bf903",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"name\": \"Singaporean Red Bull\",\r\n\t\"sex\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{localURL}}/farms/1/cattle/3",
+							"host": [
+								"{{localURL}}"
+							],
+							"path": [
+								"farms",
+								"1",
+								"cattle",
+								"3"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"id": "19d0f1cb-2344-4f2f-ab76-edf6960361e2"
+		},
+		{
+			"name": "Farms",
+			"item": [
+				{
+					"name": "Get All Farms",
+					"id": "06bb1fe9-63ef-4b46-a06a-838136612705",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{localURL}}/farms",
+							"host": [
+								"{{localURL}}"
+							],
+							"path": [
+								"farms"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Farms of a User",
+					"id": "4af2ea87-8349-4799-9707-f8d0c01145c2",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{localURL}}/users/1/farms",
+							"host": [
+								"{{localURL}}"
+							],
+							"path": [
+								"users",
+								"1",
+								"farms"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create New Farm",
+					"id": "368503aa-ec9d-4340-a0d4-2913d1f5c748",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"name\": \"Peternakan Singapore\",\r\n\t\"address\": \"Jalan Orchard\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{localURL}}/users/1/farms",
+							"host": [
+								"{{localURL}}"
+							],
+							"path": [
+								"users",
+								"1",
+								"farms"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Farm",
+					"id": "427de3a1-7e45-47f5-a958-b02ab612fc27",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{localURL}}/farms/5",
+							"host": [
+								"{{localURL}}"
+							],
+							"path": [
+								"farms",
+								"5"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Farm",
+					"id": "05c92900-6c23-4e4e-8a13-9155dc161179",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"name\": \"Peternakan Updated\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{localURL}}/farms/2",
+							"host": [
+								"{{localURL}}"
+							],
+							"path": [
+								"farms",
+								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"id": "e61dc078-ca17-415e-a430-ff7e388ba92a"
+		},
+		{
+			"name": "Stats",
+			"item": [
+				{
+					"name": "Get Cattle Stats",
+					"id": "f71c9942-be37-4318-9737-1036a133aec8",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{localURL}}/cattle/1/stats/",
+							"host": [
+								"{{localURL}}"
+							],
+							"path": [
+								"cattle",
+								"1",
+								"stats",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Latest Cattle Stat",
+					"id": "6e9a823e-8597-489e-92da-ef2d67e4b214",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{localURL}}/cattle/1/stats/latest",
+							"host": [
+								"{{localURL}}"
+							],
+							"path": [
+								"cattle",
+								"1",
+								"stats",
+								"latest"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Average Weight",
+					"id": "c23a2111-7485-420b-a874-591fcc33e77c",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{localURL}}/cattle/1/stats/weight",
+							"host": [
+								"{{localURL}}"
+							],
+							"path": [
+								"cattle",
+								"1",
+								"stats",
+								"weight"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Weight Above",
+					"id": "94a24db2-3d9d-43eb-95a6-85e362c98f2b",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{localURL}}/cattle/1/stats/weight-above/400",
+							"host": [
+								"{{localURL}}"
+							],
+							"path": [
+								"cattle",
+								"1",
+								"stats",
+								"weight-above",
+								"400"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Cattle Stats by Date",
+					"id": "1ebb6269-4148-47a6-8786-1d06c67d4979",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{localURL}}/cattle/1/stats/2023-11-01",
+							"host": [
+								"{{localURL}}"
+							],
+							"path": [
+								"cattle",
+								"1",
+								"stats",
+								"2023-11-01"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create/Update Stats by Date",
+					"id": "e6fbb324-3a68-495d-9a58-720079c88d3e",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"age\": 16,\r\n\t\"weight\": 420,\r\n\t\"healthy\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{localURL}}/cattle/1/stats/2023-11-29T13:00:00.0000Z",
+							"host": [
+								"{{localURL}}"
+							],
+							"path": [
+								"cattle",
+								"1",
+								"stats",
+								"2023-11-29T13:00:00.0000Z"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Cattle Stats",
+					"id": "c93abf34-0e3b-4340-9ab4-7b1e9d2b7bac",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{localURL}}/cattle/1/stats/2023-11-29T13:00:00.0000Z",
+							"host": [
+								"{{localURL}}"
+							],
+							"path": [
+								"cattle",
+								"1",
+								"stats",
+								"2023-11-29T13:00:00.0000Z"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"id": "a9779b4a-b498-4455-bc75-36112009741e"
+		},
+		{
+			"name": "Images",
+			"item": [
+				{
+					"name": "Upload Cattle Image",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "7cd05c8b-0841-4da1-9930-86d7bd734b64",
+								"exec": [
+									"// Removed unnecessary test script"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"id": "9a220155-bfac-4cc2-8cd7-987dabda3830",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"fileNotInWorkingDirectoryWarning": "This file isn't in your working directory. Teammates you share this request with won't be able to use this file. To make collaboration easier you can setup your working directory in Settings.",
+									"src": "/C:/Users/daffa/Downloads/paul-walker-fast-and-furious.jpg"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{localURL}}/cattle/1/images",
+							"host": [
+								"{{localURL}}"
+							],
+							"path": [
+								"cattle",
+								"1",
+								"images"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Cattle Images",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "861062f3-1cce-425f-a764-7f6558c822f7",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"id": "0999b869-4b66-447f-9c01-0e57ce242571",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"fileNotInWorkingDirectoryWarning": "This file isn't in your working directory. Teammates you share this request with won't be able to use this file. To make collaboration easier you can setup your working directory in Settings.",
+									"src": "/C:/Users/daffa/Downloads/paul-walker-fast-and-furious.jpg"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{localURL}}/cattle/2/images",
+							"host": [
+								"{{localURL}}"
+							],
+							"path": [
+								"cattle",
+								"2",
+								"images"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Latest Cattle Images",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "861062f3-1cce-425f-a764-7f6558c822f7",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"id": "838af237-414a-4771-b504-ae3fd863ded8",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"fileNotInWorkingDirectoryWarning": "This file isn't in your working directory. Teammates you share this request with won't be able to use this file. To make collaboration easier you can setup your working directory in Settings.",
+									"src": "/C:/Users/daffa/Downloads/paul-walker-fast-and-furious.jpg"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{localURL}}/cattle/2/images",
+							"host": [
+								"{{localURL}}"
+							],
+							"path": [
+								"cattle",
+								"2",
+								"images"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Save Cattle Image URL",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "861062f3-1cce-425f-a764-7f6558c822f7",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"id": "901c1498-0d5c-4704-a70a-9d4a5591b966",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"imageUrl\": \"https://res.cloudinary.com/kalkulembu/image/upload/v1699734505/lyti9wejmqbyiyqdhg5t.jpg\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{localURL}}/cattle/1/saveImageUrl",
+							"host": [
+								"{{localURL}}"
+							],
+							"path": [
+								"cattle",
+								"1",
+								"saveImageUrl"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"id": "256f043d-de17-462b-a102-5902c82b9c69"
+		},
+		{
+			"name": "Inference",
+			"item": [
+				{
+					"name": "Predict Keypoints",
+					"id": "af4d674f-f3dd-43da-891b-620f7e3561b0",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"imageUrl\": \"https://res.cloudinary.com/kalkulembu/image/upload/v1701319794/photo_4.jpg.jpg\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:5001/predict",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5001",
+							"path": [
+								"predict"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Predict Keypoints Copy",
+					"id": "cab19a7c-1d3f-4eff-bfe3-f442be318fa8",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"imageUrl\": \"https://res.cloudinary.com/kalkulembu/image/upload/v1700151927/photo_2.jpg.jpg\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:5001/predict",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5001",
+							"path": [
+								"predict"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"id": "af2d487b-cb91-4bfc-9b0f-a154754185c2"
+		}
+	]
+}

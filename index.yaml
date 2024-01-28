@@ -1,0 +1,613 @@
+openapi: 3.0.3
+info:
+  title: Kalkulembu API
+  version: 1.0.0
+  contact: {}
+servers:
+  - url: '{{localURL}}'
+  - url: http://127.0.0.1
+paths:
+  /auth/register:
+    post:
+      tags:
+        - Auth
+      summary: Register
+      description: Register
+      operationId: register
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: admin@example.com
+                name:
+                  type: string
+                  example: Ngademin Singapore
+                password:
+                  type: string
+                  example: '12345678'
+            examples:
+              Register:
+                value:
+                  email: admin@example.com
+                  name: Ngademin Singapore
+                  password: '12345678'
+      responses:
+        '200':
+          description: ''
+  /auth/login:
+    post:
+      tags:
+        - Auth
+      summary: Login
+      description: Login
+      operationId: login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: farmer@example.com
+                password:
+                  type: string
+                  example: '12345678'
+            examples:
+              Login:
+                value:
+                  email: farmer@example.com
+                  password: '12345678'
+      responses:
+        '200':
+          description: ''
+  /auth/logout:
+    get:
+      tags:
+        - Auth
+      summary: Log Out
+      description: Log Out
+      operationId: logOut
+      responses:
+        '200':
+          description: ''
+  /auth/profile:
+    post:
+      tags:
+        - Auth
+      summary: Profile
+      description: Profile
+      operationId: profile
+      responses:
+        '200':
+          description: ''
+  /auth/updateprofile:
+    put:
+      tags:
+        - Auth
+      summary: Update Profile
+      description: Update Profile
+      operationId: updateProfile
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: Petesternak Edited
+            examples:
+              Update Profile:
+                value:
+                  name: Petesternak Edited
+      responses:
+        '200':
+          description: ''
+  /auth/updatephoto:
+    put:
+      tags:
+        - Auth
+      summary: Update Photo
+      description: Update Photo
+      operationId: updatePhoto
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: ''
+  /auth/updatepassword:
+    put:
+      tags:
+        - Auth
+      summary: Update Password
+      description: Update Password
+      operationId: updatePassword
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                currentPassword:
+                  type: string
+                  example: '123456'
+                newPassword:
+                  type: string
+                  example: '1234567'
+            examples:
+              Update Password:
+                value:
+                  currentPassword: '123456'
+                  newPassword: '1234567'
+      responses:
+        '200':
+          description: ''
+  /users:
+    get:
+      tags:
+        - Users (Admin)
+      summary: Get All Users
+      description: Get All Users
+      operationId: getAllUsers
+      responses:
+        '200':
+          description: ''
+  /users/2:
+    put:
+      tags:
+        - Users (Admin)
+      summary: Update User
+      description: Update User
+      operationId: updateUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: farmer@example.com
+                name:
+                  type: string
+                  example: Petesternak
+                role:
+                  type: string
+                  example: farmer
+            examples:
+              Update User:
+                value:
+                  email: farmer@example.com
+                  name: Petesternak
+                  role: farmer
+      responses:
+        '200':
+          description: ''
+  /users/1:
+    delete:
+      tags:
+        - Users (Admin)
+      summary: Delete User
+      description: Delete User
+      operationId: deleteUser
+      responses:
+        '200':
+          description: ''
+  /cattle:
+    get:
+      tags:
+        - Cattle
+      summary: Get All Cattle
+      description: Get All Cattle
+      operationId: getAllCattle
+      responses:
+        '200':
+          description: ''
+  /cattle/1:
+    get:
+      tags:
+        - Cattle
+      summary: Get One (ID)
+      description: Get One (ID)
+      operationId: getOneId
+      responses:
+        '200':
+          description: ''
+  /farms/1/cattle:
+    get:
+      tags:
+        - Cattle
+      summary: Get Cattle in a Farm
+      description: Get Cattle in a Farm
+      operationId: getCattleInAFarm
+      responses:
+        '200':
+          description: ''
+    post:
+      tags:
+        - Cattle
+      summary: Create New Cattle
+      description: Create New Cattle
+      operationId: createNewCattle
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: Singaporean Red Bull
+                sex:
+                  type: boolean
+                  example: true
+            examples:
+              Create New Cattle:
+                value:
+                  name: Singaporean Red Bull
+                  sex: true
+      responses:
+        '200':
+          description: ''
+  /farms/1/cattle/latest:
+    get:
+      tags:
+        - Cattle
+      summary: Get Cattle Data + Stats
+      description: Get Cattle Data + Stats
+      operationId: getCattleDataStats
+      responses:
+        '200':
+          description: ''
+  /farms/1/cattle/1/latest:
+    get:
+      tags:
+        - Cattle
+      summary: Get One Cattle Data + Stats
+      description: Get One Cattle Data + Stats
+      operationId: getOneCattleDataStats
+      responses:
+        '200':
+          description: ''
+  /farms/1/cattle/3:
+    put:
+      tags:
+        - Cattle
+      summary: Update Cattle
+      description: Update Cattle
+      operationId: updateCattle
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: Aventador SVJ
+            examples:
+              Update Cattle:
+                value:
+                  name: Aventador SVJ
+      responses:
+        '200':
+          description: ''
+    delete:
+      tags:
+        - Cattle
+      summary: Delete Cattle
+      description: Delete Cattle
+      operationId: deleteCattle
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: Singaporean Red Bull
+                sex:
+                  type: boolean
+                  example: true
+            examples:
+              Delete Cattle:
+                value:
+                  name: Singaporean Red Bull
+                  sex: true
+      responses:
+        '200':
+          description: ''
+  /farms:
+    get:
+      tags:
+        - Farms
+      summary: Get All Farms
+      description: Get All Farms
+      operationId: getAllFarms
+      responses:
+        '200':
+          description: ''
+  /users/1/farms:
+    get:
+      tags:
+        - Farms
+      summary: Get Farms of a User
+      description: Get Farms of a User
+      operationId: getFarmsOfAUser
+      responses:
+        '200':
+          description: ''
+    post:
+      tags:
+        - Farms
+      summary: Create New Farm
+      description: Create New Farm
+      operationId: createNewFarm
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                address:
+                  type: string
+                  example: Jalan Orchard
+                name:
+                  type: string
+                  example: Peternakan Singapore
+            examples:
+              Create New Farm:
+                value:
+                  address: Jalan Orchard
+                  name: Peternakan Singapore
+      responses:
+        '200':
+          description: ''
+  /farms/5:
+    delete:
+      tags:
+        - Farms
+      summary: Delete Farm
+      description: Delete Farm
+      operationId: deleteFarm
+      requestBody:
+        content:
+          application/json:
+            examples:
+              Delete Farm:
+                value: ''
+      responses:
+        '200':
+          description: ''
+  /farms/2:
+    put:
+      tags:
+        - Farms
+      summary: Update Farm
+      description: Update Farm
+      operationId: updateFarm
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: Peternakan Updated
+            examples:
+              Update Farm:
+                value:
+                  name: Peternakan Updated
+      responses:
+        '200':
+          description: ''
+  /cattle/1/stats/:
+    get:
+      tags:
+        - Stats
+      summary: Get Cattle Stats
+      description: Get Cattle Stats
+      operationId: getCattleStats
+      responses:
+        '200':
+          description: ''
+  /cattle/1/stats/latest:
+    get:
+      tags:
+        - Stats
+      summary: Get Latest Cattle Stat
+      description: Get Latest Cattle Stat
+      operationId: getLatestCattleStat
+      responses:
+        '200':
+          description: ''
+  /cattle/1/stats/weight:
+    get:
+      tags:
+        - Stats
+      summary: Get Average Weight
+      description: Get Average Weight
+      operationId: getAverageWeight
+      responses:
+        '200':
+          description: ''
+  /cattle/1/stats/weight-above/400:
+    get:
+      tags:
+        - Stats
+      summary: Get Weight Above
+      description: Get Weight Above
+      operationId: getWeightAbove
+      responses:
+        '200':
+          description: ''
+  /cattle/1/stats/2023-11-01:
+    get:
+      tags:
+        - Stats
+      summary: Get Cattle Stats by Date
+      description: Get Cattle Stats by Date
+      operationId: getCattleStatsByDate
+      responses:
+        '200':
+          description: ''
+  /cattle/1/stats/2023-11-29T13:00:00.0000Z:
+    put:
+      tags:
+        - Stats
+      summary: Delete Cattle Stats
+      description: Delete Cattle Stats
+      operationId: deleteCattleStats
+      requestBody:
+        content:
+          application/json:
+            examples:
+              Delete Cattle Stats:
+                value: ''
+      responses:
+        '200':
+          description: ''
+    post:
+      tags:
+        - Stats
+      summary: Create/Update Stats by Date
+      description: Create/Update Stats by Date
+      operationId: createUpdateStatsByDate
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                age:
+                  type: number
+                  example: 16
+                healthy:
+                  type: boolean
+                  example: true
+                weight:
+                  type: number
+                  example: 420
+            examples:
+              Create/Update Stats by Date:
+                value:
+                  age: 16
+                  healthy: true
+                  weight: 420
+      responses:
+        '200':
+          description: ''
+  /cattle/1/images:
+    post:
+      tags:
+        - Images
+      summary: Upload Cattle Image
+      description: Upload Cattle Image
+      operationId: uploadCattleImage
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: ''
+  /cattle/2/images:
+    get:
+      tags:
+        - Images
+      summary: Get Cattle Images
+      description: Get Cattle Images
+      operationId: getCattleImages
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: ''
+  /cattle/1/saveImageUrl:
+    post:
+      tags:
+        - Images
+      summary: Save Cattle Image URL
+      description: Save Cattle Image URL
+      operationId: saveCattleImageUrl
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                imageUrl:
+                  type: string
+                  example: >-
+                    https://res.cloudinary.com/kalkulembu/image/upload/v1699734505/lyti9wejmqbyiyqdhg5t.jpg
+            examples:
+              Save Cattle Image URL:
+                value:
+                  imageUrl: >-
+                    https://res.cloudinary.com/kalkulembu/image/upload/v1699734505/lyti9wejmqbyiyqdhg5t.jpg
+      responses:
+        '200':
+          description: ''
+  /predict:
+    post:
+      tags:
+        - Inference
+      summary: Predict Keypoints
+      description: Predict Keypoints
+      operationId: predictKeypoints
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                imageUrl:
+                  type: string
+                  example: >-
+                    https://res.cloudinary.com/kalkulembu/image/upload/v1700151927/photo_2.jpg.jpg
+            examples:
+              Predict Keypoints:
+                value:
+                  imageUrl: >-
+                    https://res.cloudinary.com/kalkulembu/image/upload/v1701319794/photo_4.jpg.jpg
+              Predict Keypoints Copy:
+                value:
+                  imageUrl: >-
+                    https://res.cloudinary.com/kalkulembu/image/upload/v1700151927/photo_2.jpg.jpg
+      responses:
+        '200':
+          description: ''
+tags:
+  - name: Auth
+  - name: Users (Admin)
+  - name: Cattle
+  - name: Farms
+  - name: Stats
+  - name: Images
+  - name: Inference
